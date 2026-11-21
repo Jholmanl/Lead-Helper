@@ -1,0 +1,269 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<title>Never Miss a Customer Again — Lead Helper for Auto Shops</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f4f6f8;--s:#fff;--s2:#edf1f4;--tx:#14232e;--dim:#5b6d79;--bd:#dbe3e9;--ac:#0d7268;--ac2:#e2efec;--acx:#fff;--cta:#e4570d;--ctax:#fff;--bub:#e8f1ef;--ok:#1a9e54;--sh:0 10px 30px rgba(18,35,48,.08);
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0a1117;--s:#141f28;--s2:#1c2b36;--tx:#eef4f6;--dim:#9db0ba;--bd:#273a47;--ac:#35bfa9;--ac2:#11302b;--acx:#052a25;--cta:#f07f2e;--ctax:#221003;--bub:#17302b;--sh:0 10px 30px rgba(0,0,0,.4)}}
+:root[data-theme="dark"]{--bg:#0a1117;--s:#141f28;--s2:#1c2b36;--tx:#eef4f6;--dim:#9db0ba;--bd:#273a47;--ac:#35bfa9;--ac2:#11302b;--acx:#052a25;--cta:#f07f2e;--ctax:#221003;--bub:#17302b;--sh:0 10px 30px rgba(0,0,0,.4)}
+html{scroll-padding-top:env(safe-area-inset-top,0px);scroll-behavior:smooth}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font:500 16px/1.55 Manrope,system-ui,-apple-system,"Segoe UI",sans-serif;padding-bottom:5.5rem;-webkit-font-smoothing:antialiased}
+main{max-width:58rem;margin:0 auto;padding:0 1rem}
+h1,h2,h3{margin:0;font-weight:800;letter-spacing:-.02em;line-height:1.2}
+h1{font-size:clamp(1.9rem,6vw,3rem)}h2{font-size:1.5rem}
+p{margin:.5rem 0 0}.dim{color:var(--dim)}.sm{font-size:.875rem}
+section{margin-top:1.25rem}
+.card{background:var(--s);border:1px solid var(--bd);border-radius:1.25rem;padding:1.25rem;box-shadow:var(--sh)}
+@media(min-width:700px){.card{padding:1.75rem}}
+button,input{font:inherit;color:inherit}
+button{cursor:pointer;min-height:2.75rem}
+.btn{display:inline-flex;align-items:center;justify-content:center;border:0;border-radius:.85rem;padding:.85rem 1.4rem;font-weight:800;text-decoration:none;background:var(--cta);color:var(--ctax);box-shadow:0 6px 18px rgba(228,87,13,.28)}
+.btn.g{background:var(--s);color:var(--tx);border:1px solid var(--bd);box-shadow:none}
+.chip{display:inline-block;border-radius:999px;padding:.4rem .85rem;background:var(--s2);font-size:.875rem;font-weight:700}
+.chip.ca{background:var(--ac2);color:var(--ac)}
+.in{width:100%;border:1px solid var(--bd);background:var(--s);border-radius:.7rem;padding:.75rem 1rem;min-height:3rem;margin-top:.35rem}
+.in:focus,button:focus-visible{outline:2px solid var(--ac);outline-offset:2px}
+.hero{padding-top:1.25rem}
+.made{background:var(--ac);color:var(--acx);border-radius:1rem;padding:.7rem 1rem;font-weight:800;margin-bottom:1rem;display:none}
+.row{display:flex;flex-wrap:wrap;gap:.5rem}
+.tabs{display:inline-flex;background:var(--s2);border-radius:999px;padding:.25rem;margin-top:1rem}
+.tabs button{border:0;background:none;border-radius:999px;padding:.5rem 1.2rem;font-weight:800;min-height:2.5rem}
+.tabs button.on{background:var(--ac);color:var(--acx)}
+.scn button{border:1px solid var(--bd);background:var(--s);border-radius:.8rem;padding:.6rem .9rem;font-weight:700}
+.scn button.on,.scn button:hover{border-color:var(--ac);background:var(--ac2)}
+.demo{display:grid;gap:1rem;margin-top:1rem}
+@media(min-width:760px){.demo{grid-template-columns:1.4fr 1fr}}
+.pane{border:1px solid var(--bd);border-radius:1.1rem;background:var(--bg);overflow:hidden;display:flex;flex-direction:column}
+.ph{padding:.7rem 1rem;background:var(--s);border-bottom:1px solid var(--bd);font-weight:800;font-size:.9rem;display:flex;justify-content:space-between;gap:.5rem}
+.dot{display:inline-block;width:.6rem;height:.6rem;border-radius:50%;background:var(--dim);margin-right:.4rem}
+.dot.live{background:var(--ok);box-shadow:0 0 0 4px rgba(26,158,84,.2)}
+.th{padding:1rem;display:flex;flex-direction:column;gap:.55rem;min-height:15rem;max-height:23rem;overflow-y:auto}
+.b{max-width:88%;padding:.6rem .9rem;border-radius:1rem;font-size:.93rem;line-height:1.45;animation:in .25s ease}
+@keyframes in{from{opacity:0;transform:translateY(6px)}}
+@media(prefers-reduced-motion:reduce){.b{animation:none}html{scroll-behavior:auto}}
+.b small{display:block;font-size:.68rem;font-weight:800;letter-spacing:.05em;text-transform:uppercase;opacity:.65}
+.b p{margin:.1rem 0 0}
+.c{align-self:flex-end;background:var(--ac);color:var(--acx);border-bottom-right-radius:.25rem}
+.a{align-self:flex-start;background:var(--bub);border-bottom-left-radius:.25rem}
+.o{align-self:flex-start;background:var(--s);border:1.5px solid var(--cta);border-bottom-left-radius:.25rem}
+.y{align-self:flex-end;background:var(--cta);color:var(--ctax);border-bottom-right-radius:.25rem}
+.ch{display:flex;flex-wrap:wrap;gap:.45rem;padding:0 1rem 1rem}
+.ch button{border:1.5px solid var(--ac);background:var(--s);color:var(--ac);border-radius:999px;padding:.5rem .95rem;font-weight:800}
+.ch button:hover{background:var(--ac2)}
+.ph2{padding:1rem;color:var(--dim);font-size:.9rem}
+.stats{display:grid;grid-template-columns:repeat(2,1fr);gap:.6rem;margin-top:1rem}
+@media(min-width:600px){.stats{grid-template-columns:repeat(4,1fr)}}
+.stat{background:var(--s2);border-radius:.9rem;padding:.8rem}.stat b{display:block;font-size:1.6rem;line-height:1.1}
+.lead{display:flex;gap:.75rem;align-items:center;border:1px solid var(--bd);border-radius:.9rem;padding:.75rem;margin-top:.6rem;background:var(--s);animation:in .3s ease}
+.av{width:2.5rem;height:2.5rem;border-radius:50%;background:var(--ac);color:var(--acx);display:grid;place-items:center;font-weight:800;flex-shrink:0}
+.rng{width:100%;accent-color:var(--ac);min-height:2rem;margin:.3rem 0}
+.big{font-size:2.4rem;font-weight:800;line-height:1;letter-spacing:-.03em}
+.steps{display:grid;gap:.75rem;margin-top:1rem}
+@media(min-width:700px){.steps{grid-template-columns:repeat(3,1fr)}}
+.step{background:var(--s2);border-radius:1rem;padding:1rem}.step i{font-style:normal;display:inline-grid;place-items:center;width:2rem;height:2rem;border-radius:.6rem;background:var(--ac);color:var(--acx);font-weight:800;margin-bottom:.4rem}
+details{border-top:1px solid var(--bd);padding:.8rem 0}summary{font-weight:800;cursor:pointer;min-height:2rem}
+.bar{position:fixed;left:0;right:0;bottom:0;z-index:9;background:var(--s);border-top:1px solid var(--bd);padding:.65rem 1rem calc(.65rem + env(safe-area-inset-bottom,0px));display:flex;gap:.75rem;align-items:center;justify-content:space-between;box-shadow:0 -6px 20px rgba(0,0,0,.08)}
+.bar .btn{padding:.7rem 1.1rem;white-space:nowrap}
+</style>
+</head>
+<body>
+<main>
+<section class="hero">
+  <div class="made" id="made">Demo made for <span class="shopn"></span></div>
+  <div class="card">
+    <span class="chip ca">📞 Answers texts <b>and</b> phone calls</span>
+    <h1 style="margin-top:.75rem">Stop losing jobs to the next shop.</h1>
+    <p style="font-size:1.1rem">When a customer texts or calls and nobody answers fast, they book somewhere else. This helper replies in <b>seconds</b>, gets the car’s year, make and model, and books the job — day or night, while you’re under a car. <b>It never quotes a price you didn’t approve.</b></p>
+    <div class="row" style="margin-top:1rem"><span class="chip"><b class="pr">$29</b>/month · no contract</span><span class="chip">Replies in seconds</span><span class="chip">You set every price</span></div>
+    <div class="row" style="margin-top:1.25rem"><a class="btn" href="#try" id="tryBtn">▶ Try it live — 60 seconds</a><a class="btn g" href="#start">Get it for my shop</a></div>
+    <label class="sm dim" for="shopIn" style="display:block;margin-top:1.25rem">See it with your shop’s name:</label>
+    <input class="in" id="shopIn" placeholder="e.g. George’s Tire Pros" autocomplete="off" style="max-width:22rem">
+  </div>
+</section>
+
+<section class="card">
+  <h2>What is a missed call costing you?</h2>
+  <p class="dim">Slide to match your shop. Your numbers, not ours.</p>
+  <label class="sm" style="display:block;margin-top:1rem"><b>Calls/texts you miss per week:</b> <span id="mv">8</span></label>
+  <input class="rng" type="range" id="m" min="1" max="30" value="8">
+  <label class="sm" style="display:block"><b>Average job:</b> $<span id="tv">350</span></label>
+  <input class="rng" type="range" id="t" min="50" max="1500" step="25" value="350">
+  <div class="stats" style="grid-template-columns:1fr 1fr">
+    <div class="stat"><span class="sm dim">Walking out the door</span><b id="lost" style="color:var(--cta)">$0</b><span class="sm dim">per month</span></div>
+    <div class="stat"><span class="sm dim">Win back just 1 in 3</span><b id="back" style="color:var(--ac)">$0</b><span class="sm dim" id="roi"></span></div>
+  </div>
+</section>
+
+<section class="card" id="try">
+  <h2>Try it — you play the customer <i>and</i> the owner</h2>
+  <p class="dim">Describe the problem in your own words or tap a common one. Then tap the quick replies. When a price is needed, <b>your phone</b> (right side) buzzes — you choose what to charge.</p>
+  <div class="tabs" role="tablist"><button class="on" id="tText" role="tab">💬 Customer texts</button><button id="tCall" role="tab">📞 Customer calls</button></div>
+  <div class="row" style="margin-top:1rem;align-items:center"><button class="btn" id="watch" type="button" style="padding:.6rem 1.2rem">▶ Watch it run by itself</button><span class="sm dim" id="autoNote"></span></div>
+  <form id="df" style="display:flex;gap:.5rem;margin-top:1rem"><input class="in" id="di" style="margin-top:0;flex:1" placeholder="Type what’s going on, like you’d text the shop…" autocomplete="off"><button class="btn" style="padding:.6rem 1.2rem;box-shadow:none">Send</button></form>
+  <p class="sm dim" style="margin:.75rem 0 0">…or tap a common problem:</p>
+  <div class="row scn" id="scn" style="margin-top:.5rem"></div>
+  <div class="demo">
+    <div class="pane">
+      <div class="ph"><span id="hdr"><span class="dot"></span>Describe or pick a problem to start</span><span id="spd" class="dim"></span></div>
+      <div class="th" id="th"><p class="ph2" style="margin:0">👆 Describe a problem or tap one to watch the helper handle it.</p></div>
+      <div class="ch" id="ch"></div>
+    </div>
+    <div class="pane">
+      <div class="ph"><span>📱 Your phone (owner)</span><span class="dim" id="feeNote">No fee saved</span></div>
+      <div class="th" id="ow"><p class="ph2" style="margin:0">Nothing yet. When a customer needs a price or a diagnostic fee, the helper texts you here — and waits for you.</p></div>
+      <div class="ch" id="och"></div>
+    </div>
+  </div>
+</section>
+
+<section class="card">
+  <h2>Your customers</h2>
+  <p class="dim">Every finished chat or call lands here with what they need and what got booked.</p>
+  <div class="stats">
+    <div class="stat"><b id="s1">0</b><span class="sm dim">Leads captured</span></div>
+    <div class="stat"><b id="s2">0</b><span class="sm dim">Jobs booked</span></div>
+    <div class="stat"><b>2 sec</b><span class="sm dim">Reply time</span></div>
+    <div class="stat"><b id="s4">$0</b><span class="sm dim">Quoted by you</span></div>
+  </div>
+  <div id="leads"><p class="dim sm">No customers yet — finish a demo above and watch one appear.</p></div>
+</section>
+
+<section class="card">
+  <h2>You’re always in control of prices</h2>
+  <div class="steps">
+    <div class="step"><i>1</i><b style="display:block">Customer asks</b>Helper never guesses a price or a fee.</div>
+    <div class="step"><i>2</i><b style="display:block">Helper texts you</b>Job + year, make, model. You tap or type your price.</div>
+    <div class="step"><i>3</i><b style="display:block">Customer gets your price</b>Only then does the helper book the day.</div>
+  </div>
+  <p class="sm dim">Problem to diagnose? Customers hear there’s a diagnostic fee <i>before</i> any day is confirmed. Specific job? No diagnostic fee — just your price for that job.</p>
+</section>
+
+<section class="card" id="start">
+  <div style="display:flex;gap:.9rem;align-items:center;background:var(--s2);border-radius:1rem;padding:.9rem 1rem;margin-bottom:1.25rem"><div class="av" style="width:3.5rem;height:3.5rem;font-size:1.4rem">J</div><div><b>Hi, I’m Joshua — I’m local, over in Zephyrhills.</b><br><span class="dim sm">I built this for repair shops, and I answer every message myself. No call center, no runaround.</span><div class="row" style="margin-top:.5rem"><a class="btn g" id="callMe" style="display:none;padding:.4rem .9rem;min-height:2.25rem" href="#">📞 Call or text me</a></div></div></div>
+  <h2>Get it set up for your shop</h2>
+  <p><span class="big pr">$29</span> <span class="dim">/ month · no contract · cancel anytime · texts + calls included</span></p>
+  <p>One saved job usually pays for the month. You get your own private version with your shop name, services, hours and a dashboard that’s just yours. You keep your shop number.</p>
+  <label class="sm" for="cs" style="display:block;margin-top:1rem"><b>Shop name</b></label>
+  <input class="in" id="cs" placeholder="Your shop name" autocomplete="off">
+  <label class="sm" for="cp" style="display:block;margin-top:.75rem"><b>Best phone number</b></label>
+  <input class="in" id="cp" placeholder="(555) 555-0100" inputmode="tel" autocomplete="off">
+  <button class="btn" id="go" style="width:100%;margin-top:1rem">Set up my shop →</button>
+  <p class="sm" id="goNote" style="display:none"></p>
+  <p class="sm dim">Opens an email to Joshua, a local builder who answers himself. Nothing you type in this demo is saved or sent anywhere else.</p>
+  <div style="margin-top:1rem">
+    <details><summary>Is this the link my customers use?</summary><p class="dim">No — this is the try-it demo. Once you subscribe you get a private live version with your own login.</p></details>
+    <details><summary>Does it really answer phone calls?</summary><p class="dim">Yes. It picks up in your shop’s name, talks to the caller, asks for the car’s year, make and model, and books them. The demo call is simulated on screen.</p></details>
+    <details><summary>What if I change my mind?</summary><p class="dim">There’s no contract. Cancel anytime.</p></details>
+  </div>
+</section>
+<section class="card" id="tools" style="display:none"><h2>Make a link for a shop</h2><p class="dim sm">Only you see this (it opens with #tools on the end). Type a shop name, copy the link, send it.</p><input class="in" id="tn" placeholder="Shop name" autocomplete="off"><p><code id="tu" style="word-break:break-all">Type a shop name above</code></p><button class="btn g" id="tc" style="margin-top:.5rem">Copy link</button></section>
+</main>
+
+<div class="bar"><span><b class="pr">$29</b>/mo · <span class="dim sm">no contract</span></span><a class="btn" href="#start">Get it for my shop</a></div>
+
+<script>
+(function(){
+var $=function(i){return document.getElementById(i)};
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
+var DEF="Sunshine Auto Repair",shop=DEF,mode="text",fee=0,leads=[],timer=null,secs=0,st=null,run=0;
+var EMAIL="fortnitejoshyt1@gmail.com";
+var PHONE=""; // add your number here, e.g. "813-555-0100"
+if(PHONE){var cm=$("callMe");cm.href="tel:"+PHONE.replace(/[^0-9+]/g,"");cm.textContent="📞 "+PHONE;cm.style.display="inline-flex"}
+try{var q=new URLSearchParams(location.search).get("shop");if(q)shop=q.slice(0,60);var pq=parseInt(new URLSearchParams(location.search).get("price"),10);if(pq>0)document.querySelectorAll(".pr").forEach(function(e){e.textContent="$"+pq})}catch(e){}
+var SC=[
+{l:"🔑 Won’t start",say:"My car won’t start this morning. Can you help?",type:"diag",job:"a no-start problem"},
+{l:"🛞 Brake pads",say:"I need brake pads and rotors done this week.",type:"job",job:"brake pads and rotors",p:[240,320,410]},
+{l:"🛢 Oil change",say:"Hi! How much is an oil change?",type:"job",job:"an oil change",p:[55,75,95]},
+{l:"❄️ AC not cold",say:"My AC stopped blowing cold air.",type:"diag",job:"an AC problem"},
+{l:"⚠️ Check engine light",say:"My check engine light just came on.",type:"diag",job:"a check engine light"},
+{l:"🔊 Strange noise",say:"My car is making a weird noise when I drive.",type:"diag",job:"a strange noise"},
+{l:"🌡 Overheating",say:"My car keeps overheating.",type:"diag",job:"an overheating problem"},
+{l:"⚙️ Transmission",say:"My transmission is slipping.",type:"diag",job:"a transmission problem"},
+{l:"🚗 Suspension / steering",say:"The car shakes and the steering feels loose.",type:"diag",job:"a suspension and steering problem"},
+{l:"🛞 New tires",say:"I need new tires.",type:"job",job:"new tires",p:[520,680,860]},
+{l:"📐 Alignment",say:"Can I get an alignment?",type:"job",job:"an alignment",p:[90,120,150]},
+{l:"🔋 Battery",say:"My battery died. I need a new one.",type:"job",job:"a new battery",p:[160,210,260]},
+{l:"🧰 Regular maintenance",say:"I’m due for regular maintenance.",type:"job",job:"regular maintenance",p:[150,250,380]}];
+var VEH=["2019 Honda Accord","2021 Ford F-150","2020 Toyota Camry"];
+var WHO=[["Maria","today"],["James","tomorrow"],["Priya","this week"]];
+var SLOTS=["Tomorrow 9:00 AM","Tomorrow 1:30 PM","Friday 10:00 AM"];
+
+function setShop(n){shop=(n||"").trim()||DEF;document.querySelectorAll(".shopn").forEach(function(e){e.textContent=shop});$("made").style.display=shop!==DEF?"block":"none";if(!$("cs").dataset.t)$("cs").value=shop!==DEF?shop:""}
+$("shopIn").addEventListener("input",function(){setShop(this.value)});
+$("cs").addEventListener("input",function(){this.dataset.t=1});
+if(shop!==DEF)$("shopIn").value=shop;setShop(shop);
+
+// calculator
+function calc(){var m=+$("m").value,t=+$("t").value;$("mv").textContent=m;$("tv").textContent=t;var lost=Math.round(m*4.3*t),back=Math.round(lost/3);
+$("lost").textContent="$"+lost.toLocaleString();$("back").textContent="$"+back.toLocaleString();$("roi").textContent="/mo — "+Math.max(1,Math.round(back/29))+"× the $29 cost"}
+$("m").addEventListener("input",calc);$("t").addEventListener("input",calc);calc();
+
+// demo
+var sb=$("scn");SC.forEach(function(s,i){var b=document.createElement("button");b.textContent=s.l;b.addEventListener("click",function(){setAuto(false);start(i)});sb.appendChild(b)});
+function setMode(m){mode=m;$("tText").className=m==="text"?"on":"";$("tCall").className=m==="call"?"on":"";if(st)start(st.i,st.i<0?st.sc:null)}
+$("tText").addEventListener("click",function(){setMode("text")});$("tCall").addEventListener("click",function(){setMode("call")});
+function fmt(s){return(s<10?"0":"")+"0:"+(s<10?"0":"")+s}
+function hdr(live){$("hdr").innerHTML=mode==="call"?'<span class="dot'+(live?" live":"")+'"></span>'+(live?"On a call · "+fmt(secs):"Call ended"):'<span class="dot live"></span>Texting '+esc(shop);$("spd").textContent=mode==="call"?"Picked up in 1 ring":"Replied in 2 sec"}
+function stopT(){clearInterval(timer);timer=null}
+function bub(box,cls,who,t){var d=document.createElement("div");d.className="b "+cls;d.innerHTML="<small>"+who+"</small><p></p>";d.lastChild.textContent=t;box.appendChild(d);box.scrollTop=box.scrollHeight;return d}
+var auto=false;
+function setAuto(v){auto=v;$("autoNote").textContent=v?"Auto-playing — tap anything to take over":"";$("watch").textContent=v?"■ Stop auto-play":"▶ Watch it run by itself"}
+function btns(box,list,fn,id){var c=$(box);c.innerHTML="";list.forEach(function(x){var b=document.createElement("button");b.textContent=x.l;b.addEventListener("click",function(e){if(e&&e.isTrusted)setAuto(false);if(id!==run)return;c.innerHTML="";fn(x.v,x.l)});c.appendChild(b)});
+ if(auto&&id===run){var ix=box==="och"?Math.min(1,list.length-1):0;setTimeout(function(){if(auto&&id===run&&c.children[ix])c.children[ix].click()},1400)}}
+function ai(t,cb,d){var id=run,el=bub($("th"),"a","AI helper","…");setTimeout(function(){if(id!==run)return;el.lastChild.textContent=t;$("th").scrollTop=1e5;if(cb)cb()},d||700)}
+function cust(t){bub($("th"),"c","Customer",t)}
+function pick(list,fn){btns("ch",list.map(function(x){return typeof x==="object"?x:{l:x,v:x}}),function(v,l){cust(l);fn(v)},run)}
+function ownerAsk(msg,opts,fn){var id=run,box=$("ow");$("ow").querySelector(".ph2")&&($("ow").innerHTML="");bub(box,"o","Helper → You",msg);btns("och",opts,function(v,l){bub(box,"y","You",l);fn(v)},id)}
+function slots(extra,fn){pick(SLOTS,fn)}
+
+function start(i,custom){
+ run++;stopT();var sc=custom||SC[i];st={i:i,sc:sc};secs=0;
+ [].forEach.call(sb.children,function(b,k){b.className=k===i?"on":""});
+ $("th").innerHTML="";$("ch").innerHTML="";$("och").innerHTML="";$("ow").innerHTML='<p class="ph2" style="margin:0">Waiting… the helper only texts you when it needs a price or fee.</p>';
+ if(mode==="call"){timer=setInterval(function(){secs++;hdr(true)},1000)}hdr(true);
+ if(mode==="call")ai("Thanks for calling "+shop+" — I can get you booked right now. What’s going on with the car?",function(){cust(sc.say);ai("Got it. What year, make, and model is the car?",vehicle)},600);
+ else{cust(sc.say);ai("Hi! Thanks for texting "+shop+" — I can get you booked in. What year, make, and model is your car?",vehicle,600)}
+}
+function vehicle(){pick(VEH,function(v){st.veh=v;ai("Thanks — "+v+". What’s your name, and how soon do you need it?",function(){pick(WHO.map(function(w){return{l:"I’m "+w[0]+" — "+w[1],v:w}}),who)})})}
+function who(w){st.name=w[0];var sc=st.sc;
+ if(sc.type==="job"){ai("Thanks, "+st.name+". I never make up prices, so I’m texting the owner right now for your exact price on "+sc.job+" for your "+st.veh+". One moment…",function(){
+  ownerAsk("New lead: "+st.name+" — "+sc.job+", "+st.veh+". What do you want to charge?",sc.p.map(function(p){return{l:"$"+p,v:p}}),function(p){st.price=p;
+   ai("Good news, "+st.name+" — "+sc.job+" on your "+st.veh+" is $"+p+". That’s the owner’s price. Want me to lock in a time?",book)})})}
+ else if(fee){st.fee=fee;ai("Thanks, "+st.name+". Before I confirm a day, one heads-up: there’s a $"+fee+" diagnostic fee to look at this. If that works, which time suits you?",book)}
+ else{ai("Thanks, "+st.name+". Before I confirm a day, there will be a diagnostic fee to look at this. I’m asking the owner what it is — I won’t book until you’ve heard it.",function(){
+  ownerAsk("New lead: "+st.name+" — "+sc.job+", "+st.veh+". What’s your diagnostic fee? (I’ll remember it for future leads.)",[75,95,125].map(function(f){return{l:"$"+f,v:f}}),function(f){fee=st.fee=f;$("feeNote").textContent="Fee saved: $"+f;
+   ai("The diagnostic fee is $"+f+" — set by the owner. Does that work? Pick a time:",book)})})}}
+function book(){pick(SLOTS,function(t){var id=run;ai("You’re booked for "+t+" at "+shop+", "+st.name+". I’ve sent the owner a summary of "+(mode==="call"?"this call":"this chat")+". See you then!",function(){
+ stopT();hdr(false);var wasAuto=auto;if(wasAuto){setAuto(false);$("autoNote").textContent="That’s the whole flow. Now try your own problem above."}var sc=st.sc;bub($("ow"),"o","Summary → You",st.name+" · "+st.veh+" · "+sc.job+" · "+t+(st.price?" · you quoted $"+st.price:" · diagnostic fee $"+st.fee));
+ leads.unshift({n:st.name,v:st.veh,j:sc.job,t:t,p:st.price,f:st.fee,m:mode});draw();$("leads").scrollIntoView({behavior:"smooth",block:"nearest"})},800)})}
+function draw(){var q=0;leads.forEach(function(l){q+=l.p||0});$("s1").textContent=leads.length;$("s2").textContent=leads.length;$("s4").textContent="$"+q;
+ $("leads").innerHTML=leads.map(function(l){return'<div class="lead"><div class="av">'+esc(l.n[0])+'</div><div style="min-width:0;flex:1"><b>'+esc(l.n)+'</b> · <span class="dim">'+esc(l.v)+'</span><br><span class="sm">'+esc(l.j)+' — booked '+esc(l.t)+(l.p?" · $"+l.p+" (your price)":" · $"+l.f+" diag. fee")+'</span></div><span class="chip ca">'+(l.m==="call"?"📞 Call":"💬 Text")+'</span></div>'}).join("")}
+
+// describe it your own way
+var JOB=/oil change|brake|rotor|tire|alignment|battery|wiper|bulb|filter|coolant|flush|tune.?up|rotation|belt|spark plug|maintenance|axle|how much|price|cost|quote/i;
+$("df").addEventListener("submit",function(e){e.preventDefault();setAuto(false);var t=$("di").value.trim().slice(0,140);if(!t)return;$("di").value="";var job=JOB.test(t);
+ start(-1,{say:t,type:job?"job":"diag",job:"“"+t.slice(0,50)+(t.length>50?"…":"")+"”",p:[95,180,320]})});
+// jump links (plain #anchors can fail inside embedded pages)
+function goTo(id){var t=$(id);if(t)t.scrollIntoView({behavior:"smooth",block:"start"})}
+[].forEach.call(document.querySelectorAll('a[href^="#"]:not(#tryBtn)'),function(a){a.addEventListener("click",function(e){var h=a.getAttribute("href").slice(1);if(h==="tools")return;e.preventDefault();goTo(h)})});
+function playDemo(){mode="text";$("tText").className="on";$("tCall").className="";setAuto(true);start(1)}
+$("tryBtn").addEventListener("click",function(e){e.preventDefault();goTo("try");setTimeout(playDemo,500)});
+$("watch").addEventListener("click",function(){if(auto){setAuto(false)}else{goTo("try");playDemo()}});
+// CTA
+function tl(){$("tools").style.display=location.hash==="#tools"?"block":"none"}tl();addEventListener("hashchange",tl);
+$("tn").addEventListener("input",function(){var b=location.href.split("#")[0].split("?")[0],n=this.value.trim();$("tu").textContent=n?b+"?shop="+encodeURIComponent(n).replace(/%20/g,"+"):"Type a shop name above"});
+$("tc").addEventListener("click",function(){try{navigator.clipboard.writeText($("tu").textContent);this.textContent="Copied ✓"}catch(e){this.textContent="Select the link and copy it"}});
+$("go").addEventListener("click",function(){var s=$("cs").value.trim()||shop,p=$("cp").value.trim();
+ $("goNote").style.display="block";$("goNote").textContent="If your email app didn’t open, just email "+EMAIL+" and say you want the helper for "+s+".";location.href="mailto:"+EMAIL+"?subject="+encodeURIComponent("I want the lead helper for "+s)+"&body="+encodeURIComponent("Hi Joshua,\n\nI’d like the lead helper for "+s+".\nBest number: "+(p||"(add your number)")+"\n\nThanks!")});
+})();
+</script>
+</body>
+</html>
