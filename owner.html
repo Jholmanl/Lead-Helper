@@ -40,6 +40,15 @@ textarea.in{min-height:4.2rem;resize:vertical}
 .btn.sm2{min-height:2.5rem;padding:.45rem .85rem;font-size:.85rem}
 .btn:focus-visible,button:focus-visible,a:focus-visible{outline:2px solid var(--ac);outline-offset:2px}
 .hint{font-size:.8rem;color:var(--dim);margin-top:.5rem}
+.stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.5rem;margin-top:.9rem}
+@media(min-width:560px){.stats{grid-template-columns:repeat(4,minmax(0,1fr))}}
+.stat{display:block;text-align:left;border:1px solid var(--bd);background:rgba(0,0,0,.28);border-radius:1rem;padding:.7rem .85rem;cursor:pointer;transition:border-color .2s,box-shadow .2s;min-height:auto;box-shadow:inset 0 1px 0 rgba(255,255,255,.04)}
+.stat b{display:block;font:700 1.6rem/1.1 var(--hd);font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+.stat span{display:block;font-size:.75rem;color:var(--dim);font-weight:700;margin-top:.15rem}
+.stat[aria-pressed="true"]{border-color:rgba(59,227,197,.6);box-shadow:0 0 0 1px rgba(59,227,197,.3),0 8px 24px -12px rgba(59,227,197,.7)}
+.stat.o b{color:var(--cta)}.stat.t b{color:var(--ac)}.stat.k b{color:var(--ok)}
+.fbar{display:flex;justify-content:space-between;align-items:center;margin-top:.6rem;font-size:.8rem;color:var(--dim)}
+.fbar button{background:none;border:0;color:var(--ac);font-weight:800;cursor:pointer;min-height:2rem;padding:0}
 /* car rows */
 .car{border:1px solid var(--bd);border-radius:1.1rem;padding:.85rem;margin-top:.75rem;background:rgba(0,0,0,.3)}
 .car.flash{animation:flash 1.2s ease}
@@ -78,6 +87,13 @@ details[open] summary::after{content:"–"}
   <section class="card" aria-labelledby="h-cars">
     <div class="hrow"><h1 id="h-cars">Cars in the shop</h1><button class="btn sm2" id="addTop" type="button">+ Add car</button></div>
     <p class="hint" style="margin-top:.35rem">Tap a stage to text the customer that update. Your texting app opens with the message ready, so just hit send.</p>
+    <div class="stats" id="stats" role="group" aria-label="Shop at a glance, tap to filter">
+      <button class="stat" type="button" data-f="shop"><b id="nShop">0</b><span>In progress</span></button>
+      <button class="stat o" type="button" data-f="ok"><b id="nOk">0</b><span>Waiting on OK</span></button>
+      <button class="stat k" type="button" data-f="ready"><b id="nReady">0</b><span>Ready for pickup</span></button>
+      <button class="stat t" type="button" data-f="quoted"><b id="nQ">$0</b><span>Quoted</span></button>
+    </div>
+    <div class="fbar hide" id="fbar"><span id="fText"></span><button type="button" id="fClear">Show all</button></div>
     <div id="cars"></div>
   </section>
 
@@ -151,12 +167,26 @@ function saveShop(){store("alaShop",{n:val("sName"),p:val("sPhone"),a:val("sAddr
 // demo data (kept in memory only)
 if(demo){store("alaShop",{n:"Sunshine Auto Repair",p:"(813) 555-0100",a:"123 Main St, Zephyrhills, FL"});var t=Date.now();
  saveCars([{id:"d1",n:"Maria",p:"(813) 555-0142",car:"2019 Honda Accord",job:"Brake pads and rotors",q:"320",note:"Front pads are down to 2mm and the rotors are scored. Back brakes look good.",st:1,sent:{0:t-36e5,1:t-12e5}},
-  {id:"d2",n:"James",p:"(813) 555-0177",car:"2021 Ford F-150",job:"Oil change",q:"",note:"",st:0,sent:{0:t-6e5}}]);
+  {id:"d2",n:"James",p:"(813) 555-0177",car:"2021 Ford F-150",job:"Oil change",q:"",note:"",st:0,sent:{0:t-6e5}},
+  {id:"d3",n:"Priya",p:"(813) 555-0190",car:"2020 Toyota Camry",job:"A/C compressor",q:"880",note:"",st:4,sent:{0:t-9e6,1:t-8e6,2:t-7e6,3:t-5e6,4:t-3e5}}]);
  sh=shop();$("sName").value=sh.n;$("sPhone").value=sh.p;$("sAddr").value=sh.a}
 if(sh.n&&sh.p)$("shopBox").open=false;$("shopSum").textContent=sh.n||"";
 function tm(t){return new Date(t).toLocaleTimeString([], {hour:"numeric",minute:"2-digit"})}
-function draw(){var box=$("cars"),list=cars(),s=shop();box.innerHTML="";
- if(!list.length){box.innerHTML='<div class="empty">No cars yet. Tap <b>+ Add car</b> to start.</div>';return}
+var filt="",FL={shop:"In progress",ok:"Waiting on OK",ready:"Ready for pickup",quoted:"Quoted"};
+function match(c,f){return f==="shop"?c.st<4:f==="ok"?c.st===2:f==="ready"?c.st===4:f==="quoted"?(c.st>=2&&money(c.q)>0):true}
+function stats(list){var q=0;list.forEach(function(c){if(match(c,"quoted"))q+=money(c.q)});
+ $("nShop").textContent=list.filter(function(c){return match(c,"shop")}).length;
+ $("nOk").textContent=list.filter(function(c){return match(c,"ok")}).length;
+ $("nReady").textContent=list.filter(function(c){return match(c,"ready")}).length;
+ $("nQ").textContent="$"+Math.round(q).toLocaleString();
+ [].forEach.call($("stats").children,function(b){b.setAttribute("aria-pressed",b.dataset.f===filt)})}
+$("stats").addEventListener("click",function(e){var b=e.target.closest("[data-f]");if(!b)return;filt=filt===b.dataset.f?"":b.dataset.f;draw()});
+$("fClear").addEventListener("click",function(){filt="";draw()});
+function draw(){var box=$("cars"),all=cars(),s=shop();box.innerHTML="";stats(all);
+ var list=all.filter(function(c){return match(c,filt)});
+ $("fbar").classList.toggle("hide",!filt);$("fText").textContent=filt?FL[filt]+": "+list.length+" car"+(list.length===1?"":"s"):"";
+ if(!all.length){box.innerHTML='<div class="empty">No cars yet. Tap <b>+ Add car</b> to start.</div>';return}
+ if(!list.length){box.innerHTML='<div class="empty">No cars here right now.</div>';return}
  list.forEach(function(c){var row=document.createElement("div");row.className="car";row.id="car-"+c.id;
   row.innerHTML='<div class="ch"><div class="av" aria-hidden="true"></div><div class="info"><b></b><span></span></div><button class="ib" type="button" data-a="edit" aria-label="Edit">✎</button><button class="ib" type="button" data-a="del" aria-label="Remove">✕</button></div><div class="stp" role="group"></div><div class="cf"><span class="last"></span><button type="button" data-a="link">Copy link</button></div>';
   row.querySelector(".av").textContent=(c.n||c.car||"?").charAt(0).toUpperCase();
