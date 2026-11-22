@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#05080d">
+<meta name="robots" content="noindex">
+<title>Your car’s repair status</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#05080d;--s:rgba(255,255,255,.04);--s2:rgba(255,255,255,.06);--tx:#eaf2f5;--dim:#97a8b4;--bd:rgba(255,255,255,.09);--ac:#3be3c5;--ac2:rgba(59,227,197,.12);--acx:#03201a;--cta:#ff7d33;--ctax:#1d0b02;--ok:#34e58f;--hd:"Space Grotesk",Manrope,system-ui,sans-serif;--mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+*{box-sizing:border-box}html{background:var(--bg)}
+body{margin:0;background:var(--bg);color:var(--tx);font:500 16px/1.6 Manrope,system-ui,-apple-system,"Segoe UI",sans-serif;-webkit-font-smoothing:antialiased;padding:env(safe-area-inset-top,0px) 0 env(safe-area-inset-bottom,0px);overflow-x:hidden}
+body::before{content:"";position:fixed;inset:-20vmax;z-index:-1;pointer-events:none;background:radial-gradient(38vmax 28vmax at 15% 10%,rgba(59,227,197,.16),transparent 62%),radial-gradient(34vmax 26vmax at 90% 20%,rgba(123,108,255,.14),transparent 62%),radial-gradient(40vmax 30vmax at 55% 100%,rgba(255,125,51,.09),transparent 62%)}
+main{max-width:32rem;margin:0 auto;padding:1rem}
+h1,h2{font-family:var(--hd);font-weight:700;letter-spacing:-.03em;line-height:1.12;margin:0}
+p{margin:.4rem 0 0}.dim{color:var(--dim)}.sm{font-size:.875rem}
+.top{display:flex;justify-content:space-between;align-items:center;gap:.75rem;padding:.35rem .2rem}
+.shop{font:700 1.05rem/1.2 var(--hd);letter-spacing:-.01em}
+.pill{display:inline-flex;align-items:center;gap:.4rem;font:800 .68rem/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--dim);border:1px solid var(--bd);border-radius:999px;padding:.42rem .75rem;background:var(--s);white-space:nowrap}
+.dot{width:.5rem;height:.5rem;border-radius:50%;background:var(--ok);box-shadow:0 0 0 0 rgba(52,229,143,.6);animation:pulse 2s infinite}
+@keyframes pulse{70%{box-shadow:0 0 0 7px rgba(52,229,143,0)}100%{box-shadow:0 0 0 0 rgba(52,229,143,0)}}
+.card{position:relative;overflow:hidden;background:linear-gradient(180deg,rgba(255,255,255,.055),rgba(255,255,255,.018));border:1px solid var(--bd);border-radius:1.4rem;padding:1.35rem;margin-top:1rem;box-shadow:inset 0 1px 0 rgba(255,255,255,.07),0 24px 60px -24px rgba(0,0,0,.8);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px)}
+.card::before{content:"";position:absolute;left:0;right:0;top:0;height:1px;background:linear-gradient(90deg,transparent,rgba(59,227,197,.6),rgba(255,125,51,.4),transparent)}
+.car{font:600 .8rem/1 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--dim)}
+.status{font-size:clamp(1.9rem,8vw,2.5rem);margin-top:.5rem;background:linear-gradient(100deg,var(--ac),#8ab8ff 60%,var(--cta));-webkit-background-clip:text;background-clip:text;color:transparent}
+.bar{height:8px;border-radius:99px;background:rgba(255,255,255,.08);margin-top:1rem;overflow:hidden}
+.bar i{display:block;height:100%;width:0;border-radius:99px;background:linear-gradient(90deg,var(--ac),#7b6cff,var(--cta));box-shadow:0 0 16px rgba(59,227,197,.6);transition:width 1s cubic-bezier(.2,.7,.2,1)}
+.meta{display:flex;justify-content:space-between;gap:.5rem;margin-top:.45rem;font:600 .72rem/1.3 var(--mono);color:var(--dim)}
+.tl{list-style:none;margin:.25rem 0 0;padding:0}
+.tl li{position:relative;display:flex;gap:.9rem;padding:.55rem 0 .55rem}
+.tl li::before{content:"";position:absolute;left:.6rem;top:2rem;bottom:-.55rem;width:2px;background:var(--bd)}
+.tl li:last-child::before{display:none}
+.tl li.done::before{background:var(--ac)}
+.pt{flex-shrink:0;display:grid;place-items:center;width:1.25rem;height:1.25rem;border-radius:50%;border:2px solid rgba(255,255,255,.18);background:var(--bg);margin-top:.2rem;font:800 .65rem/1 var(--hd);color:var(--acx)}
+.done .pt{background:var(--ac);border-color:var(--ac)}
+.now .pt{background:var(--cta);border-color:var(--cta);box-shadow:0 0 0 0 rgba(255,125,51,.55);animation:pulseo 2s infinite}
+@keyframes pulseo{70%{box-shadow:0 0 0 8px rgba(255,125,51,0)}100%{box-shadow:0 0 0 0 rgba(255,125,51,0)}}
+.tl b{display:block;line-height:1.35}.tl .sm{display:block}
+.todo b{color:var(--dim)}.todo .sm{opacity:.75}
+.now b{color:var(--tx)}
+.quote{border:1px solid rgba(255,125,51,.5);background:rgba(255,125,51,.07);box-shadow:0 0 34px -18px rgba(255,125,51,.9)}
+.amt{font:700 2.6rem/1 var(--hd);letter-spacing:-.03em;margin-top:.35rem}
+.note{margin-top:.75rem;padding:.75rem .9rem;border-radius:.9rem;background:rgba(0,0,0,.3);border:1px solid var(--bd);white-space:pre-wrap;word-wrap:break-word}
+.btns{display:grid;gap:.6rem;margin-top:1rem}
+.btn{position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;gap:.45rem;border:0;border-radius:.95rem;padding:.95rem 1.2rem;min-height:3.1rem;font:800 1rem/1.2 Manrope,system-ui,sans-serif;text-decoration:none;color:var(--ctax);background:linear-gradient(135deg,#ffa25c,#ff6a1f);box-shadow:0 10px 30px -10px rgba(255,110,40,.7),inset 0 1px 0 rgba(255,255,255,.45);cursor:pointer}
+.btn.t{color:var(--acx);background:linear-gradient(135deg,var(--ac),#6fd3ff);box-shadow:0 10px 30px -12px rgba(59,227,197,.7),inset 0 1px 0 rgba(255,255,255,.4)}
+.btn.g{color:var(--tx);background:var(--s2);border:1px solid var(--bd);box-shadow:none}
+.btn:focus-visible,a:focus-visible{outline:2px solid var(--ac);outline-offset:3px}
+.foot{text-align:center;margin:1.5rem 0 1rem;font-size:.78rem;color:var(--dim)}
+.foot b{color:var(--tx)}
+.err{text-align:center;padding:2rem 1.35rem}
+.hide{display:none!important}
+@media(prefers-reduced-motion:reduce){.dot,.now .pt{animation:none}.bar i{transition:none}}
+</style>
+</head>
+<body>
+<main>
+  <div class="top">
+    <span class="shop" id="shop">Repair status</span>
+    <span class="pill"><span class="dot" aria-hidden="true"></span>Repair tracker</span>
+  </div>
+
+  <div id="bad" class="card err hide">
+    <h1 style="font-size:1.6rem">This link looks incomplete</h1>
+    <p class="dim">Part of the tracking link may have been cut off. Text or call the shop and they’ll send a fresh one.</p>
+  </div>
+
+  <div id="ok" class="hide">
+    <section class="card" aria-labelledby="status">
+      <div class="car" id="car"></div>
+      <h1 class="status" id="status"></h1>
+      <p id="desc"></p>
+      <div class="bar" role="progressbar" aria-label="Repair progress" aria-valuemin="0" aria-valuemax="100" id="barw"><i id="bar"></i></div>
+      <div class="meta"><span id="step"></span><span id="upd"></span></div>
+    </section>
+
+    <section class="card quote hide" id="qcard" aria-labelledby="qh">
+      <h2 id="qh" style="font-size:1.15rem">Your repair quote</h2>
+      <div class="amt" id="amt"></div>
+      <p class="dim sm" id="qjob"></p>
+      <div class="note hide" id="qnote"></div>
+      <div class="btns">
+        <a class="btn" id="approve" href="#">✓ Approve this repair</a>
+        <a class="btn g" id="qcall" href="#">📞 Questions? Call the shop</a>
+      </div>
+      <p class="sm dim" style="margin-top:.75rem">Approving opens a text to the shop so they know to go ahead. Nothing is charged here.</p>
+    </section>
+
+    <section class="card hide" id="ready" aria-labelledby="rh">
+      <h2 id="rh" style="font-size:1.15rem">Ready when you are</h2>
+      <p class="dim">Your car is done. Come by during shop hours to pick it up.</p>
+      <div class="btns">
+        <a class="btn t hide" id="dir" href="#" target="_blank" rel="noopener">📍 Get directions</a>
+        <a class="btn g" id="rcall" href="#">📞 Call the shop</a>
+      </div>
+    </section>
+
+    <section class="card" aria-labelledby="th">
+      <h2 id="th" style="font-size:1.15rem">Progress</h2>
+      <ol class="tl" id="tl"></ol>
+    </section>
+
+    <section class="card hide" id="contact">
+      <div class="btns" style="margin-top:0"><a class="btn g" id="ccall" href="#">📞 Call the shop</a></div>
+    </section>
+  </div>
+  <p class="foot">Updates arrive by text from the shop. Powered by <b>Auto Lead Agent</b>.</p>
+</main>
+<script>
+(function(){
+var $=function(i){return document.getElementById(i)};
+var STAGES=[
+ {t:"Checked in",d:"We’ve got your car and it’s in line for a tech."},
+ {t:"Diagnosing",d:"A technician is inspecting your car now."},
+ {t:"Needs your OK",d:"We found the issue. Review the quote below and approve it so we can get started."},
+ {t:"Repairing",d:"You approved the work. Your car is being repaired."},
+ {t:"Ready for pickup",d:"All done! Your car is ready to pick up."}];
+function str(x,n){return String(x==null?"":x).replace(/[\u0000-\u001f]/g," ").trim().slice(0,n)}
+function digits(x){return String(x||"").replace(/[^\d+]/g,"").slice(0,16)}
+function b64d(s){s=s.replace(/-/g,"+").replace(/_/g,"/");while(s.length%4)s+="=";var b=atob(s),u=new Uint8Array(b.length);for(var i=0;i<b.length;i++)u[i]=b.charCodeAt(i);return new TextDecoder().decode(u)}
+var d=null;
+try{var raw=location.hash.replace(/^#/,"");
+ if(raw.charAt(0)==="y"){var f=b64d(raw.slice(1)).split("|");if(f.length>=8)d={st:f[0],q:f[1],shop:f[2],ph:f[3],n:f[4],car:f[5],job:f[6],addr:f[7],t:f[8]?parseInt(f[8],36)*60000:0}}
+ else{if(raw.indexOf("s=")===0)raw=raw.slice(2);if(raw)d=JSON.parse(b64d(raw))}}catch(e){d=null}
+if(!d||typeof d!=="object"){$("bad").classList.remove("hide");return}
+var shop=str(d.shop,60)||"Your shop",ph=digits(d.ph),name=str(d.n,30),car=str(d.car,50),job=str(d.job,80),note=str(d.note,300),addr=str(d.addr,120);
+var st=Math.min(4,Math.max(0,parseInt(d.st,10)||0)),q=Number(d.q),t=Number(d.t);
+document.title=STAGES[st].t+" · "+shop;
+$("shop").textContent=shop;
+$("car").textContent=(car||"Your car")+(name?" · "+name:"");
+$("status").textContent=STAGES[st].t;
+$("desc").textContent=STAGES[st].d;
+var pct=[12,35,55,78,100][st];
+$("barw").setAttribute("aria-valuenow",pct);
+requestAnimationFrame(function(){requestAnimationFrame(function(){$("bar").style.width=pct+"%"})});
+$("step").textContent="Step "+(st+1)+" of 5";
+if(t>0&&t<4102444800000){var dt=new Date(t);$("upd").textContent="Updated "+dt.toLocaleString([], {month:"short",day:"numeric",hour:"numeric",minute:"2-digit"})}
+// timeline
+var tl=$("tl");STAGES.forEach(function(s,i){var li=document.createElement("li");li.className=i<st?"done":i===st?"now":"todo";if(i===st)li.setAttribute("aria-current","step");
+ var pt=document.createElement("span");pt.className="pt";pt.setAttribute("aria-hidden","true");if(i<st)pt.textContent="✓";
+ var box=document.createElement("div"),b=document.createElement("b"),sm=document.createElement("span");b.textContent=s.t;sm.className="sm dim";sm.textContent=i<st?"Done":i===st?"Now":"Up next";
+ box.appendChild(b);box.appendChild(sm);li.appendChild(pt);li.appendChild(box);tl.appendChild(li)});
+// contact links
+function tel(a){if(ph){a.href="tel:"+ph}else{a.classList.add("hide")}}
+["qcall","rcall","ccall"].forEach(function(id){tel($(id))});
+if(st===2){$("qcard").classList.remove("hide");
+ $("amt").textContent=(q>0&&q<1e6)?"$"+q.toLocaleString(undefined,{minimumFractionDigits:q%1?2:0,maximumFractionDigits:2}):"Quote from the shop";
+ $("qjob").textContent=(job||"Repair")+(car?" · "+car:"");
+ if(note){$("qnote").textContent=note;$("qnote").classList.remove("hide")}
+ var msg="YES, please go ahead with the "+(job||"repair")+(q>0?" ($"+q+")":"")+" on my "+(car||"car")+"."+(name?" — "+name:"");
+ if(ph){$("approve").href="sms:"+ph+"?&body="+encodeURIComponent(msg)}else{$("approve").classList.add("hide")}
+}else if(st===4){$("ready").classList.remove("hide");
+ if(addr){var a=$("dir");a.href="https://www.google.com/maps/search/?api=1&query="+encodeURIComponent(shop+" "+addr);a.classList.remove("hide")}
+}else if(ph){$("contact").classList.remove("hide")}
+$("ok").classList.remove("hide");
+})();
+</script>
+</body>
+</html>
