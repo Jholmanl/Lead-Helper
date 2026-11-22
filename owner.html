@@ -74,6 +74,24 @@ body.has-bar{padding-bottom:calc(6rem + env(safe-area-inset-bottom,0px))}body.ha
 .chips button[aria-pressed="true"]{border-color:rgba(59,227,197,.55);background:var(--ac2);color:var(--ac)}
 .faq details{border-top:1px solid var(--bd);padding:.65rem 0}.faq details:first-child{border-top:0}
 .faq p{color:var(--dim);font-size:.88rem}
+.act .cnt{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.45rem;margin-top:.8rem}
+.act .cnt div{border:1px solid var(--bd);background:rgba(0,0,0,.28);border-radius:.9rem;padding:.55rem .7rem}
+.act .cnt b{display:block;font:700 1.35rem/1.1 var(--hd);font-variant-numeric:tabular-nums}
+.act .cnt span{display:block;font-size:.7rem;line-height:1.3;color:var(--dim);font-weight:700}
+.act .more{background:none;border:0;color:var(--ac);font-weight:800;font-size:.8rem;cursor:pointer;min-height:2.2rem;padding:0;margin-top:.2rem}
+.act .flt{display:flex;gap:.3rem;margin-top:.75rem}
+.act .flt button{border:1px solid var(--bd);background:var(--s);color:var(--dim);border-radius:999px;padding:.3rem .75rem;min-height:2.1rem;font-weight:800;font-size:.75rem;cursor:pointer}
+.act .flt button[aria-pressed="true"]{border-color:rgba(59,227,197,.55);background:var(--ac2);color:var(--ac)}
+.act ul{list-style:none;margin:.5rem 0 0;padding:0}
+.act li{display:flex;gap:.65rem;align-items:flex-start;padding:.6rem 0;border-top:1px solid var(--bd)}
+.act li:first-child{border-top:0}
+.act .ic{width:2rem;height:2rem;border-radius:.6rem;display:grid;place-items:center;flex-shrink:0;font-size:.9rem;background:var(--s2)}
+.act .ic.c{background:rgba(123,108,255,.18)}.act .ic.t{background:var(--ac2)}
+.act .bd{flex:1;min-width:0}.act .bd b{font-size:.86rem}.act .bd p{margin:.1rem 0 0;font-size:.78rem;color:var(--dim);line-height:1.4}
+.act .tm{font:600 .7rem/1.3 var(--mono);color:var(--dim);text-align:right;white-space:nowrap}
+.act .tg{display:inline-block;margin-top:.25rem;font:700 .62rem/1 var(--mono);letter-spacing:.04em;text-transform:uppercase;padding:.22rem .45rem;border-radius:999px;background:var(--s2);color:var(--dim)}
+.act .tg.bk{background:rgba(52,229,143,.14);color:var(--ok)}.act .tg.pr{background:rgba(255,125,51,.14);color:var(--cta)}
+.samp{font:800 .6rem/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--dim);border:1px solid var(--bd);border-radius:999px;padding:.3rem .55rem}
 /* car rows */
 .car{border:1px solid var(--bd);border-radius:1.1rem;padding:.85rem;margin-top:.75rem;background:rgba(0,0,0,.3)}
 .car.flash{animation:flash 1.2s ease}
@@ -193,6 +211,15 @@ details[open] summary::after{content:"–"}
     <p class="hint" id="formHint"></p>
   </section>
 
+
+  <section class="card act hide" id="actCard" aria-labelledby="h-act">
+    <div class="hrow"><h2 id="h-act">Agent activity</h2><span class="samp">Sample data</span></div>
+    <p class="hint" style="margin-top:.3rem">Every call and text your agent answered, with the time and what happened.</p>
+    <div class="cnt"><div><b id="aCalls">0</b><span>Calls answered</span></div><div><b id="aTexts">0</b><span>Texts answered</span></div><div><b id="aBooked">0</b><span>Booked</span></div></div>
+    <div class="flt" role="group" aria-label="Show"><button type="button" data-k="all" aria-pressed="true">All</button><button type="button" data-k="call" aria-pressed="false">📞 Calls</button><button type="button" data-k="text" aria-pressed="false">💬 Texts</button></div>
+    <ul id="aList"></ul>
+    <button type="button" class="more" id="aMore"></button>
+  </section>
 
   <p class="hint" style="padding:0 .4rem">Texts go out from your own phone, one at a time, only when you tap a stage and hit send. The tracking link shows the car, job, stage and quote to anyone who has it. It never includes the customer’s phone number.</p>
 </main>
@@ -319,6 +346,24 @@ function view(c,from,st){pvBack=from;pvUrl=link(c,st);$("pvT").textContent="What
  $("pvF").src=pvUrl;$("pvO").href=pvUrl;$("sheet").classList.remove("hide");document.body.style.overflow="hidden";$("pvX").focus()}
 function closeView(){$("sheet").classList.add("hide");$("pvF").src="about:blank";document.body.style.overflow="";if(pvBack&&pvBack.isConnected)pvBack.focus()}
 $("pvX").addEventListener("click",closeView);
+// agent activity: sample data, demo only (the real version needs the agent's call/text log)
+if(demo){var now=Date.now(),M=6e4,AL=[
+ {k:"call",w:"Maria · (813) 555-0142",d:"Brakes grinding on a 2019 Accord. Got year/make/model, texted you for a price.",o:"pr",ot:"Waiting on your price",t:now-14*M},
+ {k:"text",w:"James · (813) 555-0177",d:"Asked for an oil change price. You set $75. Booked tomorrow 9:00 AM.",o:"bk",ot:"Booked",t:now-52*M},
+ {k:"call",w:"(352) 555-0118",d:"After hours. Check engine light on a 2017 Silverado. Booked Monday 8:30 AM.",o:"bk",ot:"Booked",t:now-11*60*M},
+ {k:"text",w:"Priya · (813) 555-0190",d:"Asked if her Camry was ready. Sent her tracking link.",o:"",ot:"Answered",t:now-13*60*M},
+ {k:"call",w:"(813) 555-0161",d:"Asked for hours and whether you do tires. Answered, no booking.",o:"",ot:"Answered",t:now-26*60*M},
+ {k:"text",w:"(727) 555-0133",d:"AC not blowing cold, 2020 Altima. Told about the diagnostic fee, booked Thursday 1:30 PM.",o:"bk",ot:"Booked",t:now-29*60*M}],af="all",aAll=false;
+ function when(t){var d=new Date(t),td=new Date();var day=d.toDateString()===td.toDateString()?"Today":(new Date(td-864e5).toDateString()===d.toDateString()?"Yesterday":d.toLocaleDateString([], {month:"short",day:"numeric"}));return day+"<br>"+d.toLocaleTimeString([], {hour:"numeric",minute:"2-digit"})}
+ function drawAct(){$("aCalls").textContent=AL.filter(function(x){return x.k==="call"}).length;$("aTexts").textContent=AL.filter(function(x){return x.k==="text"}).length;$("aBooked").textContent=AL.filter(function(x){return x.o==="bk"}).length;
+  var ul=$("aList"),rows=AL.filter(function(x){return af==="all"||x.k===af});ul.innerHTML="";
+  $("aMore").textContent=aAll?"Show less":"Show all "+rows.length;$("aMore").classList.toggle("hide",rows.length<=3);
+  rows.slice(0,aAll?rows.length:3).forEach(function(x){var li=document.createElement("li");
+   li.innerHTML='<span class="ic '+(x.k==="call"?"c":"t")+'" aria-hidden="true">'+(x.k==="call"?"📞":"💬")+'</span><div class="bd"><b></b><p></p><span class="tg '+x.o+'"></span></div><span class="tm">'+when(x.t)+'</span>';
+   li.querySelector("b").textContent=(x.k==="call"?"Call · ":"Text · ")+x.w;li.querySelector("p").textContent=x.d;li.querySelector(".tg").textContent=x.ot;ul.appendChild(li)})}
+ [].forEach.call(document.querySelectorAll("#actCard .flt button"),function(b){b.addEventListener("click",function(){af=b.dataset.k;[].forEach.call(b.parentNode.children,function(x){x.setAttribute("aria-pressed",x===b)});drawAct()})});
+ $("aMore").addEventListener("click",function(){aAll=!aAll;drawAct()});
+ $("actCard").classList.remove("hide");drawAct()}
 if(demo){$("bar").classList.remove("hide");document.body.classList.add("has-bar");$("demoView").classList.remove("hide");$("demoView").addEventListener("click",function(){var c=cars().filter(function(x){return x.id==="d1"})[0]||{n:"Maria",car:"2019 Honda Accord",job:"Brake pads and rotors",q:"320"};if(!money(c.q))c=Object.assign({},c,{q:"320"});view(c,this,2)})}
 $("sheet").addEventListener("click",function(e){if(e.target===this)closeView()});
 document.addEventListener("keydown",function(e){if(e.key==="Escape"&&!$("sheet").classList.contains("hide"))closeView()});
