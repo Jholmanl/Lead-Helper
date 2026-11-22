@@ -65,6 +65,15 @@ textarea.in{min-height:4.2rem;resize:vertical}
 body.has-bar{padding-bottom:calc(6rem + env(safe-area-inset-bottom,0px))}body.has-bar .toast{bottom:calc(5rem + env(safe-area-inset-bottom,0px))}
 .bar .pr{font:700 1.15rem/1 var(--hd)}.bar .bt{font-size:.78rem;color:var(--dim);line-height:1.3}
 .bar .btn{min-height:2.75rem;padding:.6rem 1rem;white-space:nowrap;font-size:.9rem}
+.tabs{display:grid;grid-template-columns:minmax(0,.65fr) minmax(0,1fr) minmax(0,1.2fr);gap:.2rem;background:rgba(0,0,0,.35);border:1px solid var(--bd);border-radius:999px;padding:.25rem;margin-top:.9rem;overflow-x:auto;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tabs button{border:0;background:none;color:var(--dim);border-radius:999px;padding:.45rem .3rem;min-height:2.4rem;font-weight:800;font-size:.8rem;cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tabs button[aria-selected="true"]{background:linear-gradient(135deg,var(--ac),#6fd3ff);color:var(--acx)}
+.chips{display:flex;flex-wrap:wrap;gap:.4rem;margin-top:.6rem}
+.chips button{border:1px solid var(--bd);background:var(--s);color:var(--tx);border-radius:999px;padding:.4rem .8rem;min-height:2.3rem;font-weight:700;font-size:.8rem;cursor:pointer}
+.chips button[aria-pressed="true"]{border-color:rgba(59,227,197,.55);background:var(--ac2);color:var(--ac)}
+.faq details{border-top:1px solid var(--bd);padding:.65rem 0}.faq details:first-child{border-top:0}
+.faq p{color:var(--dim);font-size:.88rem}
 /* car rows */
 .car{border:1px solid var(--bd);border-radius:1.1rem;padding:.85rem;margin-top:.75rem;background:rgba(0,0,0,.3)}
 .car.flash{animation:flash 1.2s ease}
@@ -99,7 +108,56 @@ details[open] summary::after{content:"–"}
 </head>
 <body>
 <main>
-  <div class="top"><span class="brand"><span class="logo" aria-hidden="true"></span>Auto Lead Agent</span><span class="pill">Owner only</span></div>
+  <div class="top"><span class="brand"><span class="logo" aria-hidden="true"></span>Auto Lead Agent</span><span style="display:flex;align-items:center;gap:.5rem"><span class="pill">Owner only</span><button class="ib hide" id="gear" type="button" aria-label="Shop settings" aria-controls="shopCard" aria-expanded="false">⚙️</button></span></div>
+
+  <section class="card hide" id="shopCard" aria-labelledby="h-shop">
+    <div class="hrow"><h2 id="h-shop">Set up your shop</h2><button class="ib hide" id="setX" type="button" aria-label="Close settings">✕</button></div>
+    <p class="hint" id="shopIntro" style="margin-top:.3rem">One-time setup. This shows on every update you send.</p>
+    <div class="tabs hide" id="setTabs" role="tablist" aria-label="Settings">
+      <button type="button" role="tab" id="tb-shop" aria-controls="pn-shop" aria-selected="true">Shop</button>
+      <button type="button" role="tab" id="tb-q" aria-controls="pn-q" aria-selected="false">Questions?</button>
+      <button type="button" role="tab" id="tb-imp" aria-controls="pn-imp" aria-selected="false">Improve agent</button>
+    </div>
+    <div id="pn-shop" role="tabpanel" aria-labelledby="tb-shop">
+    <div class="two">
+      <div><label for="sName">Shop name</label><input class="in" id="sName" maxlength="60" autocomplete="organization" placeholder="Sunshine Auto Repair"></div>
+      <div><label for="sPhone">Shop phone <span class="dim">(customers reply here)</span></label><input class="in" id="sPhone" inputmode="tel" maxlength="20" autocomplete="tel" placeholder="(813) 555-0100"></div>
+    </div>
+    <label for="sAddr">Shop address <span class="dim">(optional, for directions)</span></label><input class="in" id="sAddr" maxlength="120" autocomplete="street-address" placeholder="123 Main St, Zephyrhills, FL">
+    <div style="display:flex;gap:.5rem;flex-wrap:wrap;margin-top:1rem">
+      <button class="btn" id="shopSave" type="button">Save shop</button>
+      <button class="btn g hide" id="shopCancel" type="button">Cancel</button>
+    </div>
+    <p class="hint" id="shopHint">Saved on this device only. Change it anytime with ⚙️ at the top.</p>
+    </div>
+    <div id="pn-q" role="tabpanel" aria-labelledby="tb-q" class="hide">
+      <h3 style="font:700 1rem/1.3 var(--hd);margin:1rem 0 0">Questions about the agent?</h3>
+      <div class="faq" style="margin-top:.4rem">
+        <details><summary>Does it really answer phone calls?</summary><p>Yes. It picks up in your shop’s name, asks for the car’s year, make and model, and books the customer.</p></details>
+        <details><summary>Will it ever quote a price I didn’t set?</summary><p>No. It texts you for every price and waits for your answer before telling the customer.</p></details>
+        <details><summary>What if I want to cancel?</summary><p>There’s no contract. Cancel anytime.</p></details>
+      </div>
+      <label for="qText">Ask Joshua anything</label>
+      <textarea class="in" id="qText" maxlength="600" placeholder="How do I change what the agent says when it picks up?"></textarea>
+      <div style="display:flex;gap:.5rem;flex-wrap:wrap;margin-top:.9rem"><a class="btn" id="qSend" href="#">✉️ Email my question</a></div>
+      <p class="hint">Opens an email to Joshua, the local builder behind Auto Lead Agent. He answers every message himself.</p>
+    </div>
+    <div id="pn-imp" role="tabpanel" aria-labelledby="tb-imp" class="hide">
+      <h3 style="font:700 1rem/1.3 var(--hd);margin:1rem 0 0">Improve your agent</h3>
+      <p class="hint" style="margin-top:.3rem">Tell Joshua what to change and he’ll update your agent. Pick what it’s about:</p>
+      <div class="chips" id="impChips" role="group" aria-label="What should change">
+        <button type="button" aria-pressed="false">Services &amp; prices</button>
+        <button type="button" aria-pressed="false">Shop hours</button>
+        <button type="button" aria-pressed="false">How it greets customers</button>
+        <button type="button" aria-pressed="false">It said something wrong</button>
+        <button type="button" aria-pressed="false">New feature idea</button>
+      </div>
+      <label for="impText">What should it do better?</label>
+      <textarea class="in" id="impText" maxlength="800" placeholder="We don’t do transmissions. Tell those callers we can refer them to a shop nearby."></textarea>
+      <div style="display:flex;gap:.5rem;flex-wrap:wrap;margin-top:.9rem"><a class="btn" id="impSend" href="#">✉️ Send to Joshua</a></div>
+      <p class="hint">Opens an email with your shop name filled in. Nothing changes until Joshua confirms the update with you.</p>
+    </div>
+  </section>
 
   <section class="card" aria-labelledby="h-cars">
     <div class="hrow"><h1 id="h-cars">Cars in the shop</h1><button class="btn sm2" id="addTop" type="button">+ Add car</button></div>
@@ -135,17 +193,6 @@ details[open] summary::after{content:"–"}
     <p class="hint" id="formHint"></p>
   </section>
 
-  <section class="card" aria-labelledby="h-shop">
-    <details id="shopBox" open>
-      <summary id="h-shop">Your shop <span class="sm dim" id="shopSum" style="margin-left:auto;font-weight:600"></span></summary>
-      <div class="two">
-        <div><label for="sName">Shop name</label><input class="in" id="sName" maxlength="60" autocomplete="organization" placeholder="Sunshine Auto Repair"></div>
-        <div><label for="sPhone">Shop phone <span class="dim">(customers reply here)</span></label><input class="in" id="sPhone" inputmode="tel" maxlength="20" autocomplete="tel" placeholder="(813) 555-0100"></div>
-      </div>
-      <label for="sAddr">Shop address <span class="dim">(optional, for directions)</span></label><input class="in" id="sAddr" maxlength="120" autocomplete="street-address" placeholder="123 Main St, Zephyrhills, FL">
-      <p class="hint">Saved on this device only, so you only type it once.</p>
-    </details>
-  </section>
 
   <p class="hint" style="padding:0 .4rem">Texts go out from your own phone, one at a time, only when you tap a stage and hit send. The tracking link shows the car, job, stage and quote to anyone who has it. It never includes the customer’s phone number.</p>
 </main>
@@ -187,16 +234,41 @@ function message(c,st){var s=shop(),q=money(c.q),note=clean(c.note);
  var b=BODY[st].replace("{car}",c.car||"car").replace("{q}",st===2&&q?" — the quote is $"+q:"").replace("{note}",st===2&&note?" "+note:"");
  return (s.n||"Your shop")+": Hi"+(c.n?" "+c.n:"")+", "+b+(st===2?"\n":"\nTrack it: ")+link(c,st)}
 // shop details
-var sh=shop();$("sName").value=sh.n||"";$("sPhone").value=sh.p||"";$("sAddr").value=sh.a||"";
-function saveShop(){store("alaShop",{n:val("sName"),p:val("sPhone"),a:val("sAddr")});$("shopSum").textContent=val("sName");draw()}
-["sName","sPhone","sAddr"].forEach(function(id){$(id).addEventListener("input",saveShop)});
+function fillShop(){var x=shop();$("sName").value=x.n||"";$("sPhone").value=x.p||"";$("sAddr").value=x.a||""}
+function isSetUp(){var x=shop();return !!(x.n&&digits(x.p))}
+function showShop(open,focusId){var set=isSetUp();fillShop();
+ $("shopCard").classList.toggle("hide",!open);$("gear").classList.toggle("hide",!set);$("gear").setAttribute("aria-expanded",open&&set);
+ $("h-shop").textContent=set?"Settings":"Set up your shop";$("setX").classList.toggle("hide",!set);$("setTabs").classList.toggle("hide",!set);if(!set)tab("shop");if(typeof upd==="function")upd();$("shopIntro").classList.toggle("hide",set);$("shopCancel").classList.toggle("hide",!set);$("shopSave").textContent=set?"Save changes":"Save shop";
+ if(open){$("shopCard").scrollIntoView({behavior:"smooth",block:"start"});if(focusId||set)setTimeout(function(){$(focusId||"sName").focus({preventScroll:true})},300)}}
+$("gear").addEventListener("click",function(){var opening=$("shopCard").classList.contains("hide");if(opening)tab("shop");showShop(opening)});
+var EMAIL="fortnitejoshyt1@gmail.com";
+function tab(k){["shop","q","imp"].forEach(function(x){var on=x===k;$("tb-"+x).setAttribute("aria-selected",on);$("pn-"+x).classList.toggle("hide",!on)});
+}
+[["tb-shop","shop"],["tb-q","q"],["tb-imp","imp"]].forEach(function(p){$(p[0]).addEventListener("click",function(){tab(p[1])})});
+$("setTabs").addEventListener("keydown",function(e){var ks=["shop","q","imp"],cur=ks.findIndex(function(k){return $("tb-"+k).getAttribute("aria-selected")==="true"});
+ if(e.key==="ArrowRight"||e.key==="ArrowLeft"){e.preventDefault();var n=(cur+(e.key==="ArrowRight"?1:2))%3;tab(ks[n]);$("tb-"+ks[n]).focus()}});
+function mail(subject,body){return "mailto:"+EMAIL+"?subject="+encodeURIComponent(subject)+"&body="+encodeURIComponent(body)}
+function sig(){var x=shop();return "\n\n— "+(x.n||"(shop name)")+(x.p?"\n"+x.p:"")}
+function upd(){var x=shop();
+ $("qSend").href=mail("Question about my agent — "+(x.n||"my shop"),"Hi Joshua,\n\n"+(val("qText")||"(type your question here)")+sig());
+ var picks=[].filter.call($("impChips").children,function(b){return b.getAttribute("aria-pressed")==="true"}).map(function(b){return b.textContent});
+ $("impSend").href=mail("Improve my agent — "+(x.n||"my shop"),"Hi Joshua,\n\nPlease update my agent."+(picks.length?"\nAbout: "+picks.join(", "):"")+"\n\n"+(val("impText")||"(describe the change here)")+sig())}
+["qText","impText"].forEach(function(id){$(id).addEventListener("input",upd)});
+[].forEach.call($("impChips").children,function(b){b.addEventListener("click",function(){b.setAttribute("aria-pressed",b.getAttribute("aria-pressed")!=="true");upd()})});
+$("qSend").addEventListener("click",function(e){if(!val("qText")){e.preventDefault();$("qText").focus();toast("Type your question first");return}if(demo){e.preventDefault();toast("Demo: this would email your question")}});
+$("impSend").addEventListener("click",function(e){if(!val("impText")){e.preventDefault();$("impText").focus();toast("Tell Joshua what to change first");return}if(demo){e.preventDefault();toast("Demo: this would email Joshua")}});
+$("shopCancel").addEventListener("click",function(){showShop(false);$("gear").focus()});
+$("setX").addEventListener("click",function(){showShop(false);$("gear").focus()});
+$("shopSave").addEventListener("click",function(){if(!val("sName")||!digits(val("sPhone"))){$("shopHint").textContent="Add your shop name and phone number.";(val("sName")?$("sPhone"):$("sName")).focus();return}
+ var first=!isSetUp();store("alaShop",{n:val("sName"),p:val("sPhone"),a:val("sAddr")});$("shopHint").textContent="Saved on this device only. Change it anytime with ⚙️ at the top.";
+ showShop(false);draw();toast(first?"Shop saved. Add your first car":"Shop details updated");if(!first)$("gear").focus()});
 // demo data (kept in memory only)
 if(demo){store("alaShop",{n:"Sunshine Auto Repair",p:"(813) 555-0100",a:"123 Main St, Zephyrhills, FL"});var t=Date.now();
  saveCars([{id:"d1",n:"Maria",p:"(813) 555-0142",car:"2019 Honda Accord",job:"Brake pads and rotors",q:"320",note:"Front pads are down to 2mm and the rotors are scored. Back brakes look good.",st:1,sent:{0:t-36e5,1:t-12e5}},
   {id:"d2",n:"James",p:"(813) 555-0177",car:"2021 Ford F-150",job:"Oil change",q:"",note:"",st:0,sent:{0:t-6e5}},
   {id:"d3",n:"Priya",p:"(813) 555-0190",car:"2020 Toyota Camry",job:"A/C compressor",q:"880",note:"",st:4,sent:{0:t-9e6,1:t-8e6,2:t-7e6,3:t-5e6,4:t-3e5}}]);
- sh=shop();$("sName").value=sh.n;$("sPhone").value=sh.p;$("sAddr").value=sh.a}
-if(sh.n&&sh.p)$("shopBox").open=false;$("shopSum").textContent=sh.n||"";
+}
+showShop(!isSetUp());
 function tm(t){return new Date(t).toLocaleTimeString([], {hour:"numeric",minute:"2-digit"})}
 var filt="",FL={shop:"In progress",ok:"Waiting on OK",ready:"Ready for pickup",quoted:"Quoted"};
 function match(c,f){return f==="shop"?c.st<4:f==="ok"?c.st===2:f==="ready"?c.st===4:f==="quoted"?(c.st>=2&&money(c.q)>0):true}
@@ -227,7 +299,7 @@ function draw(){var box=$("cars"),all=cars(),s=shop();box.innerHTML="";stats(all
    el.className=(i<c.st?"past":i===c.st?"cur":i===c.st+1?"nxt":"")+(sent[i]?" sent":"");
    el.setAttribute("aria-label",ST[i]+(i===c.st?", current":"")+(sent[i]?", texted":"")+(el.tagName==="A"?". Opens a text to "+(c.n||"the customer"):""));
    el.addEventListener("click",function(e){
-    if(!s.n||!s.p){e.preventDefault();$("shopBox").open=true;$("sName").focus();toast("Add your shop name and phone first");return}
+    if(!s.n||!s.p){e.preventDefault();showShop(true,"sName");toast("Set up your shop first");return}
     if(!ph){e.preventDefault();edit(c.id,"cPhone");toast("Add "+(c.n||"the customer")+"’s cell to text them");return}
     if(needQ){e.preventDefault();edit(c.id,"qAmt");toast("Add the quote first, then tap Need OK");return}
     var l=cars();l.forEach(function(x){if(x.id===c.id){x.st=i;x.sent=x.sent||{};x.sent[i]=Date.now()}});saveCars(l);
