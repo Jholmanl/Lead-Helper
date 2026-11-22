@@ -212,12 +212,13 @@ details[open] summary::after{content:"–"}
   </section>
 
 
-  <section class="card act hide" id="actCard" aria-labelledby="h-act">
-    <div class="hrow"><h2 id="h-act">Agent activity</h2><span class="samp">Sample data</span></div>
+  <section class="card act" id="actCard" aria-labelledby="h-act">
+    <div class="hrow"><h2 id="h-act">Agent activity</h2><span class="samp" id="aTag">Not connected yet</span></div>
     <p class="hint" style="margin-top:.3rem">Every call and text your agent answered, with the time and what happened.</p>
     <div class="cnt"><div><b id="aCalls">0</b><span>Calls answered</span></div><div><b id="aTexts">0</b><span>Texts answered</span></div><div><b id="aBooked">0</b><span>Booked</span></div></div>
-    <div class="flt" role="group" aria-label="Show"><button type="button" data-k="all" aria-pressed="true">All</button><button type="button" data-k="call" aria-pressed="false">📞 Calls</button><button type="button" data-k="text" aria-pressed="false">💬 Texts</button></div>
+    <div class="flt hide" id="aFlt" role="group" aria-label="Show"><button type="button" data-k="all" aria-pressed="true">All</button><button type="button" data-k="call" aria-pressed="false">📞 Calls</button><button type="button" data-k="text" aria-pressed="false">💬 Texts</button></div>
     <ul id="aList"></ul>
+    <div class="empty" id="aEmpty">No calls or texts yet. Once Joshua connects your agent, every call and text it answers will show up here with the time and what happened.</div>
     <button type="button" class="more" id="aMore"></button>
   </section>
 
@@ -363,7 +364,8 @@ if(demo){var now=Date.now(),M=6e4,AL=[
    li.querySelector("b").textContent=(x.k==="call"?"Call · ":"Text · ")+x.w;li.querySelector("p").textContent=x.d;li.querySelector(".tg").textContent=x.ot;ul.appendChild(li)})}
  [].forEach.call(document.querySelectorAll("#actCard .flt button"),function(b){b.addEventListener("click",function(){af=b.dataset.k;[].forEach.call(b.parentNode.children,function(x){x.setAttribute("aria-pressed",x===b)});drawAct()})});
  $("aMore").addEventListener("click",function(){aAll=!aAll;drawAct()});
- $("actCard").classList.remove("hide");drawAct()}
+ $("aTag").textContent="Sample data";$("aEmpty").classList.add("hide");$("aFlt").classList.remove("hide");drawAct()}
+else{$("aMore").classList.add("hide")}
 if(demo){$("bar").classList.remove("hide");document.body.classList.add("has-bar");$("demoView").classList.remove("hide");$("demoView").addEventListener("click",function(){var c=cars().filter(function(x){return x.id==="d1"})[0]||{n:"Maria",car:"2019 Honda Accord",job:"Brake pads and rotors",q:"320"};if(!money(c.q))c=Object.assign({},c,{q:"320"});view(c,this,2)})}
 $("sheet").addEventListener("click",function(e){if(e.target===this)closeView()});
 document.addEventListener("keydown",function(e){if(e.key==="Escape"&&!$("sheet").classList.contains("hide"))closeView()});
