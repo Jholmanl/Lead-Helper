@@ -37,6 +37,7 @@ textarea.in{min-height:4.2rem;resize:vertical}
 .two{display:grid;gap:0 .75rem}@media(min-width:560px){.two{grid-template-columns:1fr 1fr}}
 .btn{position:relative;overflow:hidden;display:inline-flex;align-items:center;justify-content:center;gap:.45rem;border:0;border-radius:.9rem;padding:.8rem 1.15rem;min-height:3rem;font-weight:800;text-decoration:none;color:var(--ctax);background:linear-gradient(135deg,#ffa25c,#ff6a1f);box-shadow:0 10px 30px -10px rgba(255,110,40,.7),inset 0 1px 0 rgba(255,255,255,.45);cursor:pointer}
 .btn.g{color:var(--tx);background:var(--s2);border:1px solid var(--bd);box-shadow:none}
+.btn[aria-disabled="true"]{opacity:.5;pointer-events:none}
 .btn.sm2{min-height:2.5rem;padding:.45rem .85rem;font-size:.85rem}
 .btn:focus-visible,button:focus-visible,a:focus-visible{outline:2px solid var(--ac);outline-offset:2px}
 .hint{font-size:.8rem;color:var(--dim);margin-top:.5rem}
@@ -92,6 +93,19 @@ body.has-bar{padding-bottom:calc(6rem + env(safe-area-inset-bottom,0px))}body.ha
 .act .tg{display:inline-block;margin-top:.25rem;font:700 .62rem/1 var(--mono);letter-spacing:.04em;text-transform:uppercase;padding:.22rem .45rem;border-radius:999px;background:var(--s2);color:var(--dim)}
 .act .tg.bk{background:rgba(52,229,143,.14);color:var(--ok)}.act .tg.pr{background:rgba(255,125,51,.14);color:var(--cta)}
 .samp{font:800 .6rem/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--dim);border:1px solid var(--bd);border-radius:999px;padding:.3rem .55rem}
+.xb{flex:1;overflow-y:auto;padding:.9rem}
+.xb .chips button b{color:var(--ac);font-weight:800;margin-left:.25rem}
+.xi{display:flex;align-items:center;gap:.6rem;padding:.55rem 0;border-top:1px solid var(--bd)}
+.xi:first-child{border-top:0}
+.xi .nm{flex:1;min-width:0}.xi .nm b{display:block;font-size:.9rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.xi .nm span{font-size:.72rem;color:var(--dim)}
+.xi .ok{border:1px solid var(--bd);background:var(--s);color:var(--dim);border-radius:999px;padding:.3rem .65rem;min-height:2.2rem;font-weight:800;font-size:.72rem;cursor:pointer;white-space:nowrap}
+.xi .ok[aria-pressed="true"]{border-color:rgba(52,229,143,.5);background:rgba(52,229,143,.12);color:var(--ok)}
+.xtot{display:flex;justify-content:space-between;align-items:center;margin-top:.6rem;padding:.6rem .8rem;border-radius:.8rem;background:var(--ac2);border:1px solid rgba(59,227,197,.25);font-size:.85rem}
+.xtot b{font:700 1.15rem/1 var(--hd);color:var(--ac)}
+.xadd{display:grid;grid-template-columns:1fr 6.5rem auto;gap:.45rem;margin-top:.7rem;align-items:end}
+.xadd .in{margin-top:0}.xadd .btn{min-height:3rem}
+.cf .acts .xc{color:var(--cta)}
 /* car rows */
 .car{border:1px solid var(--bd);border-radius:1.1rem;padding:.85rem;margin-top:.75rem;background:rgba(0,0,0,.3)}
 .car.flash{animation:flash 1.2s ease}
@@ -232,6 +246,20 @@ details[open] summary::after{content:"–"}
     <div class="sf"><a class="btn g" id="pvO" href="#" target="_blank" rel="noopener">Open full size ↗</a><button class="btn g" type="button" id="pvC">Copy link</button></div>
   </div>
 </div>
+<div class="sheet hide" id="xSheet" role="dialog" aria-modal="true" aria-labelledby="xT">
+  <div class="box">
+    <div class="sh"><div><b id="xT">Extra work</b><span id="xS">Quote add-ons and get approval by text</span></div><button class="ib" type="button" id="xX" aria-label="Close">✕</button></div>
+    <div class="xb">
+      <p class="hint" style="margin-top:0">Tap a common add-on. Once you’ve priced one, it remembers the price, so next time it’s one tap.</p>
+      <div class="chips" id="xPre" role="group" aria-label="Common add-ons"></div>
+      <div class="xadd"><div><label for="xN" style="margin-top:.5rem">Item</label><input class="in" id="xN" maxlength="40" autocomplete="off" placeholder="Cabin air filter"></div><div><label for="xP" style="margin-top:.5rem">Price ($)</label><input class="in" id="xP" inputmode="decimal" maxlength="8" placeholder="45"></div><button class="btn g" id="xA" type="button">Add</button></div>
+      <h3 style="font:700 .95rem/1.3 var(--hd);margin:1.1rem 0 .2rem">On this car</h3>
+      <div id="xL"></div>
+      <div class="xtot hide" id="xTot"><span id="xTotL">Waiting on approval</span><b id="xTotV">$0</b></div>
+    </div>
+    <div class="sf"><a class="btn" id="xSend" href="#">📱 Text for approval</a></div>
+  </div>
+</div>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 <script>
 (function(){
@@ -249,8 +277,10 @@ function shop(){return store("alaShop")||{}}
 function cars(){return store("alaCars")||[]}
 function saveCars(l){store("alaCars",l.slice(0,40))}
 // compact link: y + base64(stage|quote|shop|shopPhone|name|car|job|address|minutes36)
-function link(c,st){var s=shop(),q=st===2?money(c.q):0;
- var f=[st,q||"",clean(s.n),digits(s.p),clean(c.n),clean(c.car),clean(c.job),st===4?clean(s.a):"",Math.floor(Date.now()/60000).toString(36)];
+function link(c,st,xs){var s=shop(),q=st===2?money(c.q):0;
+ var f=[st,q||"",clean(s.n),digits(s.p),clean(c.n),clean(c.car),clean(c.job),st===4?clean(s.a):"",Math.floor(Date.now()/60000).toString(36),
+  xs&&xs.length?xs.map(function(x){return clean(x.n).replace(/[~;]/g," ").slice(0,40)+"~"+money(x.p)}).join(";"):""];
+ while(f.length&&f[f.length-1]==="")f.pop();
  return new URL("t.html",location.href).href.split("#")[0]+"#y"+b64e(f.join("|"))}
 var BODY=[
  "your {car} is checked in and in line for a tech.",
@@ -299,8 +329,9 @@ if(demo){store("alaShop",{n:"Sunshine Auto Repair",p:"(813) 555-0100",a:"123 Mai
 showShop(!isSetUp());
 function tm(t){return new Date(t).toLocaleTimeString([], {hour:"numeric",minute:"2-digit"})}
 var filt="",FL={shop:"In progress",ok:"Waiting on OK",ready:"Ready for pickup",quoted:"Quoted"};
-function match(c,f){return f==="shop"?c.st<4:f==="ok"?c.st===2:f==="ready"?c.st===4:f==="quoted"?(c.st>=2&&money(c.q)>0):true}
-function stats(list){var q=0;list.forEach(function(c){if(match(c,"quoted"))q+=money(c.q)});
+function xsum(c){return (c.extras||[]).reduce(function(a,x){return a+money(x.p)},0)}
+function match(c,f){return f==="shop"?c.st<4:f==="ok"?c.st===2:f==="ready"?c.st===4:f==="quoted"?((c.st>=2&&money(c.q)>0)||xsum(c)>0):true}
+function stats(list){var q=0;list.forEach(function(c){if(c.st>=2)q+=money(c.q);q+=xsum(c)});
  $("nShop").textContent=list.filter(function(c){return match(c,"shop")}).length;
  $("nOk").textContent=list.filter(function(c){return match(c,"ok")}).length;
  $("nReady").textContent=list.filter(function(c){return match(c,"ready")}).length;
@@ -314,10 +345,12 @@ function draw(){var box=$("cars"),all=cars(),s=shop();box.innerHTML="";stats(all
  if(!all.length){box.innerHTML='<div class="empty">No cars yet. Tap <b>+ Add car</b> to start.</div>';return}
  if(!list.length){box.innerHTML='<div class="empty">No cars here right now.</div>';return}
  list.forEach(function(c){var row=document.createElement("div");row.className="car";row.id="car-"+c.id;
-  row.innerHTML='<div class="ch"><div class="av" aria-hidden="true"></div><div class="info"><b></b><span></span></div><button class="ib" type="button" data-a="edit" aria-label="Edit">✎</button><button class="ib" type="button" data-a="del" aria-label="Remove">✕</button></div><div class="stp" role="group"></div><div class="cf"><span class="last"></span><span class="acts"><button type="button" data-a="link">Copy link</button></span></div>';
+  row.innerHTML='<div class="ch"><div class="av" aria-hidden="true"></div><div class="info"><b></b><span></span></div><button class="ib" type="button" data-a="edit" aria-label="Edit">✎</button><button class="ib" type="button" data-a="del" aria-label="Remove">✕</button></div><div class="stp" role="group"></div><div class="cf"><span class="last"></span><span class="acts"><button type="button" data-a="extra" class="xc">➕ Extra work</button><button type="button" data-a="link">Copy link</button></span></div>';
   row.querySelector(".av").textContent=(c.n||c.car||"?").charAt(0).toUpperCase();
   row.querySelector("b").textContent=(c.n||"Customer")+(c.car?" · "+c.car:"");
-  row.querySelector(".info span").textContent=(c.job||"No job added")+(money(c.q)?" · $"+money(c.q):"");
+  var xs=(c.extras||[]),xt=xs.reduce(function(a,x){return a+money(x.p)},0);
+  row.querySelector(".info span").textContent=(c.job||"No job added")+(money(c.q)?" · $"+money(c.q):"")+(xs.length?" · +$"+xt+" extra":"");
+  if(xs.length)row.querySelector('[data-a="extra"]').textContent="➕ Extra work ("+xs.length+")";
   var stp=row.querySelector(".stp");stp.setAttribute("aria-label","Stage for "+(c.n||"this car")+", tap to text the update");
   var ph=digits(c.p),sent=c.sent||{};
   SH.forEach(function(lbl,i){var needQ=i===2&&!money(c.q),el;
@@ -338,6 +371,7 @@ function draw(){var box=$("cars"),all=cars(),s=shop();box.innerHTML="";stats(all
   row.querySelector(".last").textContent=last>=0?"Last text: "+SH[last]+" · "+tm(sent[last]):"Not texted yet";
   row.addEventListener("click",function(e){var a=e.target.closest("[data-a]");if(!a)return;
    if(a.dataset.a==="edit")edit(c.id);
+   if(a.dataset.a==="extra")openX(c.id,a);
    if(a.dataset.a==="del"&&confirmDel(row,c))del(c.id);
    if(a.dataset.a==="link"){var u=link(c,c.st);if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(u).then(function(){toast("Tracking link copied")},function(){toast("Couldn’t copy. Try again")});else toast("Copy isn’t supported on this browser")}});
   box.appendChild(row)})}
@@ -370,6 +404,40 @@ if(demo){$("bar").classList.remove("hide");document.body.classList.add("has-bar"
 $("sheet").addEventListener("click",function(e){if(e.target===this)closeView()});
 document.addEventListener("keydown",function(e){if(e.key==="Escape"&&!$("sheet").classList.contains("hide"))closeView()});
 $("pvC").addEventListener("click",function(){if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(pvUrl).then(function(){toast("Tracking link copied")},function(){toast("Couldn’t copy. Try again")})});
+var PRE=["Cabin air filter","Engine air filter","Wiper blades","Alignment","Tire rotation","Coolant flush","Brake fluid flush","Battery"],xId=null,xBack=null;
+function preP(){return store("alaPre")||{}}
+function getCar(id){return cars().filter(function(x){return x.id===id})[0]}
+function setCar(id,fn){var l=cars();l.forEach(function(x){if(x.id===id)fn(x)});saveCars(l)}
+function xMsg(c,pend){var s=shop(),tot=pend.reduce(function(a,x){return a+money(x.p)},0);
+ return (s.n||"Your shop")+": Hi"+(c.n?" "+c.n:"")+", while working on your "+(c.car||"car")+" we found it also needs: "+pend.map(function(x){return x.n+" ($"+money(x.p)+")"}).join(", ")+"."+(pend.length>1?" Total $"+tot+".":"")+" Approve or decline here:\n"+link(c,c.st,pend)}
+function openX(id,from){xId=id;xBack=from;drawX();$("xSheet").classList.remove("hide");document.body.style.overflow="hidden";$("xX").focus()}
+function closeX(){$("xSheet").classList.add("hide");document.body.style.overflow="";draw();var b=document.querySelector('#car-'+xId+' [data-a="extra"]');if(b)b.focus()}
+function addX(n,p){n=clean(n).slice(0,40);p=money(p);if(!n||!p)return false;setCar(xId,function(c){c.extras=c.extras||[];c.extras.push({n:n,p:p,ok:false})});
+ var pp=preP();pp[n.toLowerCase()]=p;store("alaPre",pp);drawX();toast("Added "+n+" · $"+p);return true}
+function drawX(){var c=getCar(xId);if(!c)return;var xs=c.extras||[],pp=preP(),ph=digits(c.p),s=shop();
+ $("xT").textContent="Extra work for "+(c.n||"this car");$("xS").textContent=(c.car||"")+(c.job?" · "+c.job:"");
+ var pre=$("xPre");pre.innerHTML="";PRE.forEach(function(n){var b=document.createElement("button");b.type="button";var sp=pp[n.toLowerCase()];
+  b.textContent=n;if(sp){var t=document.createElement("b");t.textContent="$"+sp;b.appendChild(t)}
+  b.setAttribute("aria-label",sp?"Add "+n+" for $"+sp:"Price "+n);
+  b.addEventListener("click",function(){if(sp){addX(n,sp)}else{$("xN").value=n;$("xP").value="";$("xP").focus();toast("Enter a price for "+n)}});pre.appendChild(b)});
+ var L=$("xL");L.innerHTML="";if(!xs.length)L.innerHTML='<p class="hint" style="margin:0">No extra work yet.</p>';
+ xs.forEach(function(x,i){var r=document.createElement("div");r.className="xi";r.innerHTML='<div class="nm"><b></b><span></span></div><button type="button" class="ok"></button><button type="button" class="ib" aria-label="Remove">✕</button>';
+  r.querySelector("b").textContent=x.n;r.querySelector(".nm span").textContent="$"+money(x.p)+(x.sent?" · texted "+tm(x.sent):"");
+  var ok=r.querySelector(".ok");ok.setAttribute("aria-pressed",!!x.ok);ok.textContent=x.ok?"✓ Approved":"Mark approved";
+  ok.addEventListener("click",function(){setCar(xId,function(c){c.extras[i].ok=!c.extras[i].ok});drawX()});
+  r.querySelector(".ib").addEventListener("click",function(){setCar(xId,function(c){c.extras.splice(i,1)});drawX()});L.appendChild(r)});
+ var pend=xs.filter(function(x){return !x.ok}),pt=pend.reduce(function(a,x){return a+money(x.p)},0),at=xs.filter(function(x){return x.ok}).reduce(function(a,x){return a+money(x.p)},0);
+ $("xTot").classList.toggle("hide",!xs.length);$("xTotL").textContent=pend.length?"Waiting on approval"+(at?" (+$"+at+" approved)":""):"All approved";$("xTotV").textContent="$"+(pend.length?pt:at);
+ var a=$("xSend");if(pend.length&&ph&&s.n&&s.p){a.href="sms:"+ph+"?&body="+encodeURIComponent(xMsg(c,pend));a.removeAttribute("aria-disabled");a.textContent="📱 Text "+(c.n||"customer")+" for approval"+(pend.length>1?" ($"+pt+")":"")}
+ else{a.href="#";a.setAttribute("aria-disabled","true");a.textContent=!pend.length?"Add extra work to send":!ph?"Add their cell to text them":"Set up your shop first"}}
+$("xA").addEventListener("click",function(){if(!addX(val("xN"),val("xP"))){toast(val("xN")?"Enter a price":"Enter the item");(val("xN")?$("xP"):$("xN")).focus();return}$("xN").value="";$("xP").value="";$("xN").focus()});
+$("xP").addEventListener("keydown",function(e){if(e.key==="Enter")$("xA").click()});
+$("xX").addEventListener("click",closeX);
+$("xSheet").addEventListener("click",function(e){if(e.target===this)closeX()});
+document.addEventListener("keydown",function(e){if(e.key==="Escape"&&!$("xSheet").classList.contains("hide"))closeX()});
+$("xSend").addEventListener("click",function(e){if(this.getAttribute("aria-disabled")==="true"){e.preventDefault();return}
+ var t=Date.now();setCar(xId,function(c){(c.extras||[]).forEach(function(x){if(!x.ok)x.sent=t})});
+ if(demo){e.preventDefault();toast("Demo: would text the extra work for approval")}setTimeout(drawX,300)});
 function confirmDel(row,c){var b=row.querySelector('[data-a="del"]');if(b.dataset.sure){return true}b.dataset.sure=1;b.textContent="?";b.setAttribute("aria-label","Tap again to remove");toast("Tap again to remove "+(c.n||"this car"));setTimeout(function(){if(b.isConnected){delete b.dataset.sure;b.textContent="✕";b.setAttribute("aria-label","Remove")}},3000);return false}
 function del(id){saveCars(cars().filter(function(x){return x.id!==id}));if(editId===id)resetForm();draw()}
 var F=["cName","cPhone","cCar","cJob","qAmt","nNote"],K=["n","p","car","job","q","note"];

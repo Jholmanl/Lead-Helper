@@ -50,6 +50,11 @@ p{margin:.4rem 0 0}.dim{color:var(--dim)}.sm{font-size:.875rem}
 .btn.t{color:var(--acx);background:linear-gradient(135deg,var(--ac),#6fd3ff);box-shadow:0 10px 30px -12px rgba(59,227,197,.7),inset 0 1px 0 rgba(255,255,255,.4)}
 .btn.g{color:var(--tx);background:var(--s2);border:1px solid var(--bd);box-shadow:none}
 .btn:focus-visible,a:focus-visible{outline:2px solid var(--ac);outline-offset:3px}
+.xl{list-style:none;margin:.7rem 0 0;padding:0}
+.xl li{display:flex;justify-content:space-between;gap:.75rem;padding:.55rem 0;border-top:1px solid var(--bd)}
+.xl li:first-child{border-top:0}.xl b{font:700 1rem/1.3 var(--hd);color:var(--tx);white-space:nowrap}
+.xt{display:flex;justify-content:space-between;align-items:center;margin-top:.4rem;padding-top:.6rem;border-top:1px dashed rgba(255,125,51,.4)}
+.xt b{font:700 1.8rem/1 var(--hd)}
 .foot{text-align:center;margin:1.5rem 0 1rem;font-size:.78rem;color:var(--dim)}
 .foot b{color:var(--tx)}
 .err{text-align:center;padding:2rem 1.35rem}
@@ -76,6 +81,19 @@ p{margin:.4rem 0 0}.dim{color:var(--dim)}.sm{font-size:.875rem}
       <p id="desc"></p>
       <div class="bar" role="progressbar" aria-label="Repair progress" aria-valuemin="0" aria-valuemax="100" id="barw"><i id="bar"></i></div>
       <div class="meta"><span id="step"></span><span id="upd"></span></div>
+    </section>
+
+    <section class="card quote hide" id="xcard" aria-labelledby="xh">
+      <h2 id="xh" style="font-size:1.15rem">Extra work found</h2>
+      <p class="dim sm">While working on your car, the shop found it also needs:</p>
+      <ul class="xl" id="xl"></ul>
+      <div class="xt"><span class="dim">Total</span><b id="xtot"></b></div>
+      <div class="btns">
+        <a class="btn" id="xyes" href="#">✓ Approve extra work</a>
+        <a class="btn g" id="xno" href="#">No thanks</a>
+        <a class="btn g" id="xcall" href="#">📞 Questions? Call the shop</a>
+      </div>
+      <p class="sm dim" style="margin-top:.75rem">Your answer opens a text to the shop. Nothing is charged here.</p>
     </section>
 
     <section class="card quote hide" id="qcard" aria-labelledby="qh">
@@ -124,7 +142,7 @@ function digits(x){return String(x||"").replace(/[^\d+]/g,"").slice(0,16)}
 function b64d(s){s=s.replace(/-/g,"+").replace(/_/g,"/");while(s.length%4)s+="=";var b=atob(s),u=new Uint8Array(b.length);for(var i=0;i<b.length;i++)u[i]=b.charCodeAt(i);return new TextDecoder().decode(u)}
 var d=null;
 try{var raw=location.hash.replace(/^#/,"");
- if(raw.charAt(0)==="y"){var f=b64d(raw.slice(1)).split("|");if(f.length>=8)d={st:f[0],q:f[1],shop:f[2],ph:f[3],n:f[4],car:f[5],job:f[6],addr:f[7],t:f[8]?parseInt(f[8],36)*60000:0}}
+ if(raw.charAt(0)==="y"){var f=b64d(raw.slice(1)).split("|");if(f.length>=7)d={st:f[0],q:f[1],shop:f[2],ph:f[3],n:f[4],car:f[5],job:f[6],addr:f[7]||"",t:f[8]?parseInt(f[8],36)*60000:0,x:f[9]||""}}
  else{if(raw.indexOf("s=")===0)raw=raw.slice(2);if(raw)d=JSON.parse(b64d(raw))}}catch(e){d=null}
 if(!d||typeof d!=="object"){$("bad").classList.remove("hide");return}
 var shop=str(d.shop,60)||"Your shop",ph=digits(d.ph),name=str(d.n,30),car=str(d.car,50),job=str(d.job,80),note=str(d.note,300),addr=str(d.addr,120);
@@ -146,7 +164,15 @@ var tl=$("tl");STAGES.forEach(function(s,i){var li=document.createElement("li");
  box.appendChild(b);box.appendChild(sm);li.appendChild(pt);li.appendChild(box);tl.appendChild(li)});
 // contact links
 function tel(a){if(ph){a.href="tel:"+ph}else{a.classList.add("hide")}}
-["qcall","rcall","ccall"].forEach(function(id){tel($(id))});
+["qcall","rcall","ccall","xcall"].forEach(function(id){tel($(id))});
+var xs=String(d.x||"").split(";").map(function(p){var a=p.split("~");return{n:str(a[0],40),p:Number(a[1])}}).filter(function(x){return x.n&&x.p>0&&x.p<1e6}).slice(0,10);
+if(xs.length){var xt=0,ul=$("xl");xs.forEach(function(x){xt+=x.p;var li=document.createElement("li"),a=document.createElement("span"),b=document.createElement("b");a.textContent=x.n;b.textContent="$"+x.p.toLocaleString();li.appendChild(a);li.appendChild(b);ul.appendChild(li)});
+ xt=Math.round(xt*100)/100;$("xtot").textContent="$"+xt.toLocaleString();$("xcard").classList.remove("hide");
+ var list=xs.map(function(x){return x.n}).join(", ");
+ if(ph){$("xyes").href="sms:"+ph+"?&body="+encodeURIComponent("YES, please add the extra work on my "+(car||"car")+": "+list+" ($"+xt+")."+(name?" — "+name:""));
+  $("xno").href="sms:"+ph+"?&body="+encodeURIComponent("No thanks on the extra work for my "+(car||"car")+" ("+list+"). Please just finish the original job."+(name?" — "+name:""))}
+ else{$("xyes").classList.add("hide");$("xno").classList.add("hide")}
+ document.title="Extra work found · "+shop}
 if(st===2){$("qcard").classList.remove("hide");
  $("amt").textContent=(q>0&&q<1e6)?"$"+q.toLocaleString(undefined,{minimumFractionDigits:q%1?2:0,maximumFractionDigits:2}):"Quote from the shop";
  $("qjob").textContent=(job||"Repair")+(car?" · "+car:"");
@@ -155,7 +181,7 @@ if(st===2){$("qcard").classList.remove("hide");
  if(ph){$("approve").href="sms:"+ph+"?&body="+encodeURIComponent(msg)}else{$("approve").classList.add("hide")}
 }else if(st===4){$("ready").classList.remove("hide");
  if(addr){var a=$("dir");a.href="https://www.google.com/maps/search/?api=1&query="+encodeURIComponent(shop+" "+addr);a.classList.remove("hide")}
-}else if(ph){$("contact").classList.remove("hide")}
+}else if(ph&&!xs.length){$("contact").classList.remove("hide")}
 $("ok").classList.remove("hide");
 })();
 </script>
